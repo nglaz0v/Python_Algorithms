@@ -10,19 +10,19 @@
 import random
 
 x = None
-c = input("a - int; b - float; c - char: ")
-if (c == "a"):
+c = input("a - int; b - float; c - char: ")[0].lower()
+if (c == 'a'):
     a = int(input("a: "))
     b = int(input("b: "))
     if (a <= b):
         x = random.randint(a, b)
-elif (c == "b"):
+elif (c == 'b'):
     a = float(input("a: "))
     b = float(input("b: "))
     x = random.uniform(a, b)
-elif (c == "c"):
-    a = input("a: ").lower()
-    b = input("b: ").lower()
+elif (c == 'c'):
+    a = input("a: ")[0].lower()
+    b = input("b: ")[0].lower()
     if (ord(a) <= ord(b)):
         x = chr(random.randint(ord(a), ord(b)))
 print(x)
