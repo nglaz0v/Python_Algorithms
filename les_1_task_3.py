@@ -10,7 +10,7 @@
 import random
 
 x = None
-c = input("a - int; b - float; c - char: ")[0].lower()
+c = input("a - int; b - float; c - char: ").lower()
 if (c == 'a'):
     a = int(input("A: "))
     b = int(input("B: "))
@@ -21,8 +21,8 @@ elif (c == 'b'):
     b = float(input("B: "))
     x = random.uniform(a, b)
 elif (c == 'c'):
-    a = input("A: ")[0].lower()
-    b = input("B: ")[0].lower()
+    a = input("A: ").lower()
+    b = input("B: ").lower()
     if (ord(a) <= ord(b)):
         x = chr(random.randint(ord(a), ord(b)))
 print(x)

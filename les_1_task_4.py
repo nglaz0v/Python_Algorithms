@@ -1,8 +1,8 @@
 # Пользователь вводит две буквы. Определить, на каких местах алфавита они
 # стоят, и сколько между ними находится букв.
 
-smb1 = input("smb1: ")[0].lower()
-smb2 = input("smb2: ")[0].lower()
+smb1 = input("smb1: ").lower()
+smb2 = input("smb2: ").lower()
 smb1_ord = ord(smb1)
 smb2_ord = ord(smb2)
 if (ord('a') <= smb1_ord <= ord('z')) and (ord('a') <= smb2_ord <= ord('z')):
