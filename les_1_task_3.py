@@ -12,17 +12,17 @@ import random
 x = None
 c = input("a - int; b - float; c - char: ")[0].lower()
 if (c == 'a'):
-    a = int(input("a: "))
-    b = int(input("b: "))
+    a = int(input("A: "))
+    b = int(input("B: "))
     if (a <= b):
         x = random.randint(a, b)
 elif (c == 'b'):
-    a = float(input("a: "))
-    b = float(input("b: "))
+    a = float(input("A: "))
+    b = float(input("B: "))
     x = random.uniform(a, b)
 elif (c == 'c'):
-    a = input("a: ")[0].lower()
-    b = input("b: ")[0].lower()
+    a = input("A: ")[0].lower()
+    b = input("B: ")[0].lower()
     if (ord(a) <= ord(b)):
         x = chr(random.randint(ord(a), ord(b)))
 print(x)

@@ -2,7 +2,7 @@
 
 year = int(input("year: "))
 if (year < 1582):
-    print(f"{year} - это год до введение григорианского календаря")
+    print(f"{year} - это год до введения григорианского календаря")
 else:
     century = year // 100
     if ((year % 100) == 0):

@@ -4,7 +4,8 @@
 a = int(input("a: "))
 b = int(input("b: "))
 c = int(input("c: "))
-x = 0
+x = None
+# Решение №1: перебор всех возможных (3! = 6) вариантов
 if (a <= b) and (b <= c):
     x = b
 elif (c <= b) and (b <= a):
@@ -17,4 +18,10 @@ elif (b <= a) and (a <= c):
     x = a
 else:
     x = a
+print(x)
+
+# Решение №2
+lo = min(min(a, b), c)
+hi = max(max(a, b), c)
+x = (a + b + c) - lo - hi
 print(x)
