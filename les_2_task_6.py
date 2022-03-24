@@ -6,4 +6,17 @@
 загадано. Если за 10 попыток число не отгадано, вывести ответ.
 """
 
-# ...
+import random
+
+n = random.randint(0, 100)
+for i in range(10):
+    x = int(input("x: "))
+    if (x < n):
+        print("x < n")
+    elif (x > n):
+        print("x > n")
+    else:
+        print("x = n")
+        break
+if (i == 10):
+    print(f"Число не отгадано: {n}")
