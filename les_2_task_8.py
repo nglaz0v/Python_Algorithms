@@ -6,7 +6,8 @@
 """
 
 
-def digit_count(num, dgt):
+def count_digit(num, dgt):
+    """Подсчитать, сколько раз цифра встречается в записи натурального числа"""
     count = 0
     while (num > 0):
         digit = num % 10
@@ -21,5 +22,5 @@ digit = int(input("d: "))
 count = 0
 for i in range(n):
     number = int(input(f"{i+1}: "))
-    count += digit_count(number, digit)
+    count += count_digit(number, digit)
 print(f"{count=}")

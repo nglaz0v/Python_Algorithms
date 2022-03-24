@@ -6,6 +6,7 @@
 
 
 def digits_sum(number):
+    """Сумма цифр натурального числа"""
     s = 0
     while (number > 0):
         digit = number % 10
