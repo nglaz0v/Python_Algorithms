@@ -4,4 +4,12 @@
 Количество элементов (n) вводится с клавиатуры.
 """
 
-# ...
+n = int(input("n: "))
+a = 1
+s = a
+for i in range(1, n):
+    a /= -2
+    s += a
+    # print(f"{i}: {a} {s}")
+print(f"{s=}")
+# s = 1 + sum from{i=1} to{n-1} (-0.5)^i
