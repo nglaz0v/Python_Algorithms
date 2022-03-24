@@ -5,4 +5,11 @@
 пар «код-символ» в каждой строке.
 """
 
-# ...
+start = 32
+stop = 127
+for i in range(start, stop+1):
+    c = chr(i)
+    print(f"{i:3d}-{c}", end='\t')
+    if ((i - start + 1) % 10) == 0:
+        print("")
+print("")
