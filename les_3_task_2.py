@@ -6,4 +6,12 @@
 в этих позициях первого массива стоят чётные числа.
 """
 
-# ...
+import random
+
+n = int(input("N: "))
+k = int(input("K: "))
+a = [random.randint(0, k) for i in range(n)]
+print(a)
+
+b = [i for i in range(len(a)) if a[i] % 2 == 0]
+print(b)
