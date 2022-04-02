@@ -5,4 +5,20 @@
 её в последнюю ячейку строки. В конце следует вывести полученную матрицу.
 """
 
-# ...
+nrows = 5
+ncols = 4
+
+matrix = []  # [[None for _ in range(ncols)] for _ in range(nrows)]
+for i in range(nrows):
+    matrix.append([])
+    s = 0
+    for j in range(ncols-1):
+        x = int(input(f"A[{i},{j}]: "))
+        matrix[i].append(x)
+        s += x
+    matrix[i].append(s)
+
+for line in matrix:
+    for item in line:
+        print(f"{item:>4}", end='')
+    print()
