@@ -4,4 +4,8 @@
 каждому из чисел в диапазоне от 2 до 9. Примечание: 8 разных ответов.
 """
 
-# ...
+dict = {k: 0 for k in range(2, 10)}
+for n in range(2, 100):
+    for i in range(2, 10):
+        dict[i] += 1 if (n % i == 0) else 0
+print(dict)
