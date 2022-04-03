@@ -6,16 +6,17 @@
 
 import random
 
-n = int(input("N: "))
-k = int(input("K: "))
+print(__doc__)
+n = int(input("Количество элементов массива: "))
+k = int(input("Супремум массива: "))
 a = [random.randint(-k, k) for i in range(n)]
 print(a)
 
 min_i = [0, 0]
 min_v = [a[0], a[0]]
-q = 0
+j = 0
 for i in range(1, len(a)):
-    if a[i] < min_v[q]:
-        min_i[q], min_v[q] = i, a[i]
-        q = (q + 1) % 2
-print(f"{min_i}: {min_v}")
+    if a[i] < min_v[j]:
+        min_i[j], min_v[j] = i, a[i]
+        j = (j + 1) % 2
+print(f"#{min_i[0]}: {min_v[0]}; #{min_i[1]}: {min_v[1]}")

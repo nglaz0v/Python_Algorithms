@@ -8,10 +8,11 @@
 
 import random
 
-n = int(input("N: "))
-k = int(input("K: "))
+print(__doc__)
+n = int(input("Количество элементов массива: "))
+k = int(input("Супремум массива: "))
 a = [random.randint(0, k) for i in range(n)]
-print(a)
+print(f"{a}")
 
 b = [i for i in range(len(a)) if a[i] % 2 == 0]
-print(b)
+print(f"{b}")

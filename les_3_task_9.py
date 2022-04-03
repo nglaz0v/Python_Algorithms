@@ -5,9 +5,10 @@
 
 import random
 
-k = int(input("K: "))
-nrows = int(input("nrows: "))
-ncols = int(input("ncols: "))
+print(__doc__)
+k = int(input("Супремум матрицы: "))
+nrows = int(input("Количество строк матрицы: "))
+ncols = int(input("Количество столбцов матрицы: "))
 
 matrix = [[random.randint(-k, k) for _ in range(ncols)] for _ in range(nrows)]
 for line in matrix:
@@ -15,7 +16,7 @@ for line in matrix:
         print(f"{item:>4}", end='')
     print()
 
-maxj = matrix[0][0]
+maxj = -k-1
 for j in range(ncols):
     mini = matrix[0][j]
     for i in range(nrows):
@@ -23,4 +24,4 @@ for j in range(ncols):
             mini = matrix[i][j]
     if mini > maxj:
         maxj = mini
-print(maxj)
+print(f"{maxj}")
