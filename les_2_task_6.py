@@ -8,9 +8,11 @@
 
 import random
 
+print(__doc__)
 n = random.randint(0, 100)
+print("Отгадайте число от 0 до 100 за 10 попыток")
 for i in range(10):
-    x = int(input("x: "))
+    x = int(input(f"[{i}] x: "))
     if (x < n):
         print("x < n")
     elif (x > n):
@@ -18,5 +20,5 @@ for i in range(10):
     else:
         print("x = n")
         break
-if (i == 10):
+else:
     print(f"Число не отгадано: {n}")

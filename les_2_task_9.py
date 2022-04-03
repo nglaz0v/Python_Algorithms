@@ -15,7 +15,8 @@ def digits_sum(number):
     return s
 
 
-n = int(input("N: "))
+print(__doc__)
+n = int(input("Количество чисел N: "))
 x = 0
 for i in range(n):
     number = int(input(f"{i+1}: "))

@@ -10,12 +10,13 @@
 его в качестве делителя.
 """
 
+print(__doc__)
 while True:
     a = float(input("A: "))
     b = float(input("B: "))
     while True:
         op = input("+, -, *, /; 0: ")
-        if op in "+-*/0":
+        if op in {'+', '-', '*', '/', '0'}:
             break
         else:
             print(f"Неверный знак операции: {op}")

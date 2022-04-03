@@ -16,6 +16,7 @@ def int_reverse(number):
     return result
 
 
+print(__doc__)
 number = int(input("N: "))
 result = int_reverse(number)
 print(f"X: {result}")

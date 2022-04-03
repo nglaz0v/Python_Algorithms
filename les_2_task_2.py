@@ -20,6 +20,7 @@ def count_even_odd(number):
     return even, odd
 
 
+print(__doc__)
 number = int(input("N: "))
 even, odd = count_even_odd(number)
 print(f"чётных: {even}, нечётных: {odd}")

@@ -5,6 +5,7 @@
 пар «код-символ» в каждой строке.
 """
 
+print(__doc__)
 start = 32
 stop = 127
 for i in range(start, stop+1):

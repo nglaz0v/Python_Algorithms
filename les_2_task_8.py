@@ -17,8 +17,9 @@ def count_digit(num, dgt):
     return count
 
 
-n = int(input("N: "))
-digit = int(input("d: "))
+print(__doc__)
+n = int(input("Количество чисел N: "))
+digit = int(input("Искомая цифра d: "))
 count = 0
 for i in range(n):
     number = int(input(f"{i+1}: "))
