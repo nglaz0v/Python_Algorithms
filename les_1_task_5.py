@@ -3,9 +3,10 @@
 Пользователь вводит номер буквы в алфавите. Определить, какая это буква.
 """
 
-pos = int(input("pos: "))
+print(__doc__)
+pos = int(input("Номер буквы: "))
 if (1 <= pos <= 26):
     letter = chr(ord('a') + pos - 1)
-    print(f"{pos}: {letter}")
+    print(f"Буква: {letter}")
 else:
     print(f"Номер буквы ({pos}) находится за пределами латинского алфавита")

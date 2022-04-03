@@ -4,7 +4,8 @@
 високосным.
 """
 
-year = int(input("year: "))
+print(__doc__)
+year = int(input("Год: "))
 if (year < 1582):
     print(f"{year} - это год до введения григорианского календаря")
 else:

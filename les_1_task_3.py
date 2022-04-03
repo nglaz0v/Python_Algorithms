@@ -12,20 +12,23 @@
 
 import random
 
+print(__doc__)
 x = None
 c = input("a - int; b - float; c - char: ").lower()
+a = input("A: ")
+b = input("B: ")
 if (c == 'a'):
-    a = int(input("A: "))
-    b = int(input("B: "))
+    a = int(a)
+    b = int(b)
     if (a <= b):
         x = random.randint(a, b)
 elif (c == 'b'):
-    a = float(input("A: "))
-    b = float(input("B: "))
+    a = float(a)
+    b = float(b)
     x = random.uniform(a, b)
 elif (c == 'c'):
-    a = input("A: ").lower()
-    b = input("B: ").lower()
-    if (ord(a) <= ord(b)):
-        x = chr(random.randint(ord(a), ord(b)))
+    a = ord(a.lower())
+    b = ord(b.lower())
+    if (a <= b):
+        x = chr(random.randint(a, b))
 print(x)

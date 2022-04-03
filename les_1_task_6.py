@@ -6,6 +6,8 @@
 равнобедренным или равносторонним.
 """
 
+print(__doc__)
+print("Длины отрезков:")
 a = float(input("a: "))
 b = float(input("b: "))
 c = float(input("c: "))

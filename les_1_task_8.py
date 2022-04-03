@@ -4,6 +4,7 @@
 но меньше другого).
 """
 
+print(__doc__)
 a = int(input("a: "))
 b = int(input("b: "))
 c = int(input("c: "))
@@ -21,10 +22,10 @@ elif (b <= a) and (a <= c):
     x = a
 else:
     x = a
-print(x)
+print(f"{x}")
 
 # Решение №2
 lo = min(min(a, b), c)
 hi = max(max(a, b), c)
 x = (a + b + c) - lo - hi
-print(x)
+print(f"{x}")
