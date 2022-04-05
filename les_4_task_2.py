@@ -11,5 +11,31 @@
 Примечание. Вспомните классический способ проверки числа на простоту.
 """
 
-print(__doc__)
-# ...
+
+def eratosthenes(n):
+    """Решето Эратосфена (нахождение всех простых чисел до заданного N)"""
+    sieve = [i for i in range(n)]
+    sieve[1] = 0
+    for i in range(2, n):
+        if sieve[i] != 0:
+            j = i * 2
+            while j < n:
+                sieve[j] = 0
+                j += i
+    result = [i for i in sieve if i != 0]
+    return result
+
+
+def task(n):
+    for i in range(n):
+        x = i**i
+
+
+# python3 -m timeit -n 1000 -s "from les_4_task_2 import eratosthenes" "eratosthenes(100000)"
+# 1000 loops, best of 5: 26.5 msec per loop
+
+
+if __name__ == "__main__":
+    import cProfile
+    cProfile.run("eratosthenes(100000)")
+    # 1    0.035    0.035    0.043    0.043 les_4_task_2.py:15(eratosthenes)
