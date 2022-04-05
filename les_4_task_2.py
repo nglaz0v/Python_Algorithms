@@ -11,6 +11,8 @@
 Примечание. Вспомните классический способ проверки числа на простоту.
 """
 
+import math
+
 
 def eratosthenes_full(n):
     """Решето Эратосфена (нахождение всех простых чисел до заданного N)"""
@@ -29,16 +31,20 @@ def eratosthenes_full(n):
 def sieve(k):
     """Нахождение k-го по счёту простого числа с помощью решета Эратосфена"""
     n = 100000
-    sieve = [i * (i & 1) for i in range(n)]
-    sieve[1] = 0
-    sieve[2] = 2
-    for i in range(3, n, 2):
-        if sieve[i] != 0:
-            for j in range(i * 2, n, i):
-                sieve[j] = 0
-    result = [i for i in sieve if i != 0]
-    # print(result)
-    return result[k]
+    nums = [i * (i & 1) for i in range(n)]
+    nums[1] = 0
+    nums[2] = 2
+    for i in range(3, int(math.sqrt(n)), 2):
+        if nums[i] != 0:
+            for j in range(i ** 2, n, i):
+                nums[j] = 0
+    q = -1
+    for i in nums:
+        if i != 0:
+            q += 1
+            if q == k:
+                break
+    return i
 
 
 def prime(k):
@@ -49,7 +55,7 @@ def prime(k):
 
 def test_task(func):
     """Проверка: сравнение с эталонными значениями"""
-    etalons = [2, 3, 5, 7]
+    etalons = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29)
     for i, item in enumerate(etalons):
         assert item == func(i)
         print(f"Test {item} OK")
@@ -62,6 +68,6 @@ def test_task(func):
 if __name__ == "__main__":
     test_task(sieve)
     # test_task(prime)
-    import cProfile
-    cProfile.run("eratosthenes(100000)")
+#    import cProfile
+#    cProfile.run("eratosthenes(100000)")
     # 1    0.035    0.035    0.043    0.043 les_4_task_2.py:15(eratosthenes)
