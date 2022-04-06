@@ -49,16 +49,39 @@ def sieve(k):
 
 def prime(k):
     """Нахождение k-го по счёту простого числа без помощи решета Эратосфена"""
-    # TODO
-    pass
+
+    def isprime(m):
+        """Проверка, является ли число m простым"""
+        if m == 2:
+            return True
+        if m % 2 == 0:
+            return False
+        for i in range(3, int(math.sqrt(m))+1, 2):
+            if m % i == 0:
+                return False
+        return True
+
+    if k == 0:
+        return 2
+    n = 100000
+    q = 0
+    for i in range(3, n, 2):
+        if isprime(i):
+            q += 1
+            if q == k:
+                break
+    return i
 
 
 def test_task(func):
     """Проверка: сравнение с эталонными значениями"""
-    etalons = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29)
+    etalons = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59,
+               61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127,
+               131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193,
+               197, 199)
     for i, item in enumerate(etalons):
+        print(f"[{func.__name__}] {i}: {item} = {func(i)}")
         assert item == func(i)
-        print(f"Test {item} OK")
 
 
 # python3 -m timeit -n 1000 -s "from les_4_task_2 import eratosthenes" "eratosthenes(100000)"
@@ -67,7 +90,7 @@ def test_task(func):
 
 if __name__ == "__main__":
     test_task(sieve)
-    # test_task(prime)
+    test_task(prime)
 #    import cProfile
 #    cProfile.run("eratosthenes(100000)")
     # 1    0.035    0.035    0.043    0.043 les_4_task_2.py:15(eratosthenes)
