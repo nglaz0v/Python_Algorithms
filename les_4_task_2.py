@@ -31,13 +31,14 @@ def eratosthenes_full(n):
 def sieve(k):
     """Нахождение k-го по счёту простого числа с помощью решета Эратосфена"""
     n = 100000
-    nums = [i * (i & 1) for i in range(n)]
-    nums[1] = 0
-    nums[2] = 2
+    nums = [i * (i & 1) for i in range(n)]  # список для решета
+                                            # (сразу обнулить все чётные числа)
+    nums[1] = 0  # 1 - не простое число
+    nums[2] = 2  # 2 - простое число
     for i in range(3, int(math.sqrt(n)), 2):
         if nums[i] != 0:
             for j in range(i ** 2, n, i):
-                nums[j] = 0
+                nums[j] = 0  # это не простое число
     q = -1
     for i in nums:
         if i != 0:
@@ -53,13 +54,13 @@ def prime(k):
     def isprime(m):
         """Проверка, является ли число m простым"""
         if m == 2:
-            return True
+            return True  # 2 - простое число
         if m % 2 == 0:
-            return False
+            return False  # все чётные числа - не простые
         for i in range(3, int(math.sqrt(m))+1, 2):
-            if m % i == 0:
-                return False
-        return True
+            if m % i == 0:  # если i является делителем для m
+                return False  # то это не простое число
+        return True  # у m нет нетривиальных делителей - это простое число
 
     if k == 0:
         return 2
