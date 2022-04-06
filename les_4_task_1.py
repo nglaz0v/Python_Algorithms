@@ -13,7 +13,7 @@ e. написать общий вывод: какой из трёх вариан
 
 
 def reverse_1(number):
-    """Инвертировать порядок цифр натурального числа (версия 1)"""
+    """Инвертировать порядок цифр натурального числа (числовая версия)"""
     result = 0
     while (number > 0):
         digit = number % 10
@@ -24,15 +24,17 @@ def reverse_1(number):
 
 
 def reverse_2(number):
-    """Инвертировать порядок цифр натурального числа (версия 2)"""
-    result = ""
-    for i in str(number):
-        result = i + result
-    return int(result)
+    """Инвертировать порядок цифр натурального числа (рекурсивная версия)"""
+    def invert(number):
+        if (len(number) == 1):
+            return number
+        else:
+            return invert(number[1:]) + number[:1]
+    return int(invert(str(number)))
 
 
 def reverse_3(number):
-    """Инвертировать порядок цифр натурального числа (версия 3)"""
+    """Инвертировать порядок цифр натурального числа (версия со срезами)"""
     return int(str(number)[::-1])
 
 
@@ -41,25 +43,25 @@ def test_task(n):
     a = reverse_1(n)
     b = reverse_2(n)
     c = reverse_3(n)
-    print(f"n : {a} = {b} = {c}")
+    print("%d : %d = %d = %d" % (n, a, b, c))
     assert a == b == c
 
 
-# python3 -m timeit -n 1000 -s "from les_4_task_1 import reverse_1" "reverse_1(1234567890987654321)"
-# 1000 loops, best of 5: 2.87 usec per loop
-# python3 -m timeit -n 1000 -s "from les_4_task_1 import reverse_2" "reverse_2(1234567890987654321)"
-# 1000 loops, best of 5: 1.18 usec per loop
-# python3 -m timeit -n 1000 -s "from les_4_task_1 import reverse_3" "reverse_3(1234567890987654321)"
+# python3 -m timeit -n 1000 -s "from les_4_task_1 import reverse_1" "reverse_1(92233720368547758070)"
+# 1000 loops, best of 5: 3.09 usec per loop
+# python3 -m timeit -n 1000 -s "from les_4_task_1 import reverse_2" "reverse_2(92233720368547758070)"
+# 1000 loops, best of 5: 5.32 usec per loop
+# python3 -m timeit -n 1000 -s "from les_4_task_1 import reverse_3" "reverse_3(92233720368547758070)"
 # 1000 loops, best of 5: 414 nsec per loop
 
 
 if __name__ == "__main__":
-    test_task(1234567890987654321)
+    test_task(92233720368547758070)
 
 #    import cProfile
-#    cProfile.run("reverse_1(1234567890987654321)")
+#    cProfile.run("reverse_1(92233720368547758070)")
 #        1    0.000    0.000    0.000    0.000 les_4_task_1.py:15(reverse_1)
-#    cProfile.run("reverse_2(1234567890987654321)")
+#    cProfile.run("reverse_2(92233720368547758070)")
 #        1    0.000    0.000    0.000    0.000 les_4_task_1.py:15(reverse_2)
-#    cProfile.run("reverse_3(1234567890987654321)")
+#    cProfile.run("reverse_3(92233720368547758070)")
 #        1    0.000    0.000    0.000    0.000 les_4_task_1.py:15(reverse_3)
