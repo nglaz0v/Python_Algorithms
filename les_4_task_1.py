@@ -47,21 +47,31 @@ def test_task(n):
     assert a == b == c
 
 
-# python3 -m timeit -n 1000 -s "from les_4_task_1 import reverse_1" "reverse_1(92233720368547758070)"
-# 1000 loops, best of 5: 3.09 usec per loop
-# python3 -m timeit -n 1000 -s "from les_4_task_1 import reverse_2" "reverse_2(92233720368547758070)"
-# 1000 loops, best of 5: 5.32 usec per loop
-# python3 -m timeit -n 1000 -s "from les_4_task_1 import reverse_3" "reverse_3(92233720368547758070)"
-# 1000 loops, best of 5: 414 nsec per loop
-
-
 if __name__ == "__main__":
     test_task(92233720368547758070)
 
-#    import cProfile
-#    cProfile.run("reverse_1(92233720368547758070)")
-#        1    0.000    0.000    0.000    0.000 les_4_task_1.py:15(reverse_1)
-#    cProfile.run("reverse_2(92233720368547758070)")
-#        1    0.000    0.000    0.000    0.000 les_4_task_1.py:15(reverse_2)
-#    cProfile.run("reverse_3(92233720368547758070)")
-#        1    0.000    0.000    0.000    0.000 les_4_task_1.py:15(reverse_3)
+###############################################################################
+
+# python3 -m timeit -n 100000 -s "from les_4_task_1 import reverse_1" "reverse_1(92233720368547758070)"
+# 100000 loops, best of 5: 3.09 usec per loop
+# python3 -m timeit -n 100000 -s "from les_4_task_1 import reverse_2" "reverse_2(92233720368547758070)"
+# 100000 loops, best of 5: 5.09 usec per loop
+# python3 -m timeit -n 100000 -s "from les_4_task_1 import reverse_3" "reverse_3(92233720368547758070)"
+# 100000 loops, best of 5: 410 nsec per loop
+
+###############################################################################
+
+    import cProfile
+    N = 100000
+    X = 92233720368547758070
+    cProfile.run("[reverse_1(%d) for i in range(%d)]" % (X, N))
+#   100000    0.318    0.000    0.318    0.000 les_4_task_1.py:15(reverse_1)
+    cProfile.run("[reverse_2(%d) for i in range(%d)]" % (X, N))
+#2000000/100000    0.899    0.000    1.006    0.000 les_4_task_1.py:28(invert)
+    cProfile.run("[reverse_3(%d) for i in range(%d)]" % (X, N))
+#   100000    0.047    0.000    0.047    0.000 les_4_task_1.py:36(reverse_3)
+
+###############################################################################
+
+# TODO: сложность
+# TODO: ВЫВОД
