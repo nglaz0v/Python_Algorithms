@@ -11,9 +11,6 @@
 Примечание. Вспомните классический способ проверки числа на простоту.
 """
 
-import math
-
-
 # def eratosthenes(n):
 #    """Решето Эратосфена (нахождение всех простых чисел до заданного N)"""
 #    sieve = [i for i in range(n)]
@@ -30,12 +27,12 @@ import math
 
 def sieve(k):
     """Нахождение k-го по счёту простого числа с помощью решета Эратосфена"""
-    n = 100000
+    n = 1000000
     nums = [i * (i & 1) for i in range(n)]  # список для решета
                                             # (сразу обнулить все чётные числа)
     nums[1] = 0  # 1 - не простое число
     nums[2] = 2  # 2 - простое число
-    for i in range(3, int(math.sqrt(n)), 2):
+    for i in range(3, int(n**(1/2))+1, 2):
         if nums[i] != 0:
             for j in range(i ** 2, n, i):
                 nums[j] = 0  # это не простое число
@@ -53,18 +50,16 @@ def prime(k):
 
     def isprime(m):
         """Проверка, является ли число m простым"""
-        if m == 2:
-            return True  # 2 - простое число
         if m % 2 == 0:
-            return False  # все чётные числа - не простые
-        for i in range(3, int(math.sqrt(m))+1, 2):
+            return m == 2  # все чётные числа - не простые, но 2 - простое число
+        for i in range(3, int(m**(1/2))+1, 2):
             if m % i == 0:  # если i является делителем для m
                 return False  # то это не простое число
         return True  # у m нет нетривиальных делителей - это простое число
 
     if k == 0:
         return 2
-    n = 100000
+    n = 1000000
     q = 0
     for i in range(3, n, 2):
         if isprime(i):
@@ -92,23 +87,23 @@ if __name__ == "__main__":
 ###############################################################################
 
 # python3 -m timeit -n 100 -s "from les_4_task_2 import sieve" "sieve(100)"
-# 100 loops, best of 5: 12.2 msec per loop
+# 100 loops, best of 5: 156 msec per loop
 # python3 -m timeit -n 100 -s "from les_4_task_2 import prime" "prime(100)"
-# 100 loops, best of 5: 166 usec per loop
-# python3 -m timeit -n 100 -s "from les_4_task_2 import sieve" "sieve(100000)"
-# 100 loops, best of 5: 14.9 msec per loop
-# python3 -m timeit -n 100 -s "from les_4_task_2 import prime" "prime(100000)"
-# 100 loops, best of 5: 77.5 msec per loop
+# 100 loops, best of 5: 165 usec per loop
+# python3 -m timeit -n 10 -s "from les_4_task_2 import sieve" "sieve(100000)"
+# 10 loops, best of 5: 178 msec per loop
+# python3 -m timeit -n 10 -s "from les_4_task_2 import prime" "prime(100000)"
+# 10 loops, best of 5: 1.88 sec per loop
 
 ###############################################################################
 
     import cProfile
     N = 100
-    X = 100000
+    X = 10000
     cProfile.run("[sieve(%d) for i in range(%d)]" % (X, N))
-#      100    0.807    0.008    1.453    0.015 les_4_task_2.py:31(sieve)
+#      100    9.003    0.090   15.905    0.159 les_4_task_2.py:28(sieve)
     cProfile.run("[prime(%d) for i in range(%d)]" % (X, N))
-#      100    0.730    0.007    9.186    0.092 les_4_task_2.py:51(prime)
-#  4999900    8.033    0.000    8.456    0.000 les_4_task_2.py:54(isprime)
+#      100    0.736    0.007    9.055    0.091 les_4_task_2.py:48(prime)
+#  5237100    8.319    0.000    8.319    0.000 les_4_task_2.py:51(isprime)
 
 ###############################################################################
