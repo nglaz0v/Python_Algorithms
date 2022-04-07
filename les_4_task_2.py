@@ -14,18 +14,18 @@
 import math
 
 
-def eratosthenes_full(n):
-    """Решето Эратосфена (нахождение всех простых чисел до заданного N)"""
-    sieve = [i for i in range(n)]
-    sieve[1] = 0
-    for i in range(2, n):
-        if sieve[i] != 0:
-            j = i * 2
-            while j < n:
-                sieve[j] = 0
-                j += i
-    result = [i for i in sieve if i != 0]
-    return result
+# def eratosthenes(n):
+#    """Решето Эратосфена (нахождение всех простых чисел до заданного N)"""
+#    sieve = [i for i in range(n)]
+#    sieve[1] = 0
+#    for i in range(2, n):
+#        if sieve[i] != 0:
+#            j = i * 2
+#            while j < n:
+#                sieve[j] = 0
+#                j += i
+#    result = [i for i in sieve if i != 0]
+#    return result
 
 
 def sieve(k):
@@ -85,13 +85,30 @@ def test_task(func):
         assert item == func(i)
 
 
-# python3 -m timeit -n 1000 -s "from les_4_task_2 import eratosthenes" "eratosthenes(100000)"
-# 1000 loops, best of 5: 26.5 msec per loop
-
-
 if __name__ == "__main__":
     test_task(sieve)
     test_task(prime)
-#    import cProfile
-#    cProfile.run("eratosthenes(100000)")
-    # 1    0.035    0.035    0.043    0.043 les_4_task_2.py:15(eratosthenes)
+
+###############################################################################
+
+# python3 -m timeit -n 100 -s "from les_4_task_2 import sieve" "sieve(100)"
+# 100 loops, best of 5: 12.2 msec per loop
+# python3 -m timeit -n 100 -s "from les_4_task_2 import prime" "prime(100)"
+# 100 loops, best of 5: 166 usec per loop
+# python3 -m timeit -n 100 -s "from les_4_task_2 import sieve" "sieve(100000)"
+# 100 loops, best of 5: 14.9 msec per loop
+# python3 -m timeit -n 100 -s "from les_4_task_2 import prime" "prime(100000)"
+# 100 loops, best of 5: 77.5 msec per loop
+
+###############################################################################
+
+    import cProfile
+    N = 100
+    X = 100000
+    cProfile.run("[sieve(%d) for i in range(%d)]" % (X, N))
+#      100    0.807    0.008    1.453    0.015 les_4_task_2.py:31(sieve)
+    cProfile.run("[prime(%d) for i in range(%d)]" % (X, N))
+#      100    0.730    0.007    9.186    0.092 les_4_task_2.py:51(prime)
+#  4999900    8.033    0.000    8.456    0.000 les_4_task_2.py:54(isprime)
+
+###############################################################################
