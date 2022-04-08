@@ -99,34 +99,27 @@ if __name__ == "__main__":
     # print_primes(10**6)
 
 ###############################################################################
-
-# python3 -m timeit -n 100 -s "from les_4_task_2 import sieve" "sieve(100)"
-# 100 loops, best of 5: 160 msec per loop
-# python3 -m timeit -n 100 -s "from les_4_task_2 import prime" "prime(100)"
-# 100 loops, best of 5: 124 usec per loop
-# python3 -m timeit -n 10 -s "from les_4_task_2 import sieve" "sieve(1000)"
-# 10 loops, best of 5: 159 msec per loop
-# python3 -m timeit -n 10 -s "from les_4_task_2 import prime" "prime(1000)"
-# 10 loops, best of 5: 2.33 msec per loop
-# python3 -m timeit -n 10 -s "from les_4_task_2 import sieve" "sieve(10000)"
-# 10 loops, best of 5: 162 msec per loop
-# python3 -m timeit -n 10 -s "from les_4_task_2 import prime" "prime(10000)"
-# 10 loops, best of 5: 50.7 msec per loop
-# python3 -m timeit -n 10 -s "from les_4_task_2 import sieve" "sieve(50000)"
-# 10 loops, best of 5: 174 msec per loop
-# python3 -m timeit -n 10 -s "from les_4_task_2 import prime" "prime(50000)"
-# 10 loops, best of 5: 70.1 msec per loop
-
+# python3 -m timeit -n 100 -s "from les_4_task_2 import <функция>" "<функция>(<N>)"
+# ------------------------------------
+# |    N   |    sieve   |    prime   |
+# ------------------------------------
+# |    100 | ~80   usec | ~127  usec |
+# |   1000 | ~1.3  msec | ~2.38 msec |
+# |  10000 | ~19.5 msec | ~52.5 msec |
+# | 100000 | ~336  msec | ~1.68  sec |
+# ------------------------------------
 ###############################################################################
 
     import cProfile
     N = 100
     X = 10000
     cProfile.run("[sieve(%d) for i in range(%d)]" % (X, N))
-#      100    9.003    0.090   15.905    0.159 les_4_task_2.py:28(sieve)
+#         404 function calls in 1.882 seconds
+#      100    0.957    0.010    1.846    0.018 les_4_task_2.py:17(sieve)
     cProfile.run("[prime(%d) for i in range(%d)]" % (X, N))
-#  5237100    5.401    0.000    5.401    0.000 les_4_task_2.py:48(isprime)
-#      100    0.793    0.008    6.194    0.062 les_4_task_2.py:60(prime)
+#         5236604 function calls in 6.165 seconds
+#  5236300    5.408    0.000    5.408    0.000 les_4_task_2.py:44(isprime)
+#      100    0.757    0.008    6.165    0.062 les_4_task_2.py:57(prime)
 
 ###############################################################################
 
@@ -137,4 +130,12 @@ if __name__ == "__main__":
 # (цикл F):   ~ N/2 итераций
 # итого: (цикл E)*(цикл F) = (N**(1/2))/6 * N/2 = (N**(3/2))/12 ~ N**(3/2)
 
-# TODO: ВЫВОД
+# ВЫВОД:
+# Функция sieve() за счёт использования решета Эратосфена с каждым проходом
+# исключает из рассмотрения всё больше кандидатов в простые числа.
+# Функция prime() просто перебирает числа друг за другом и ведёт подсчёт
+# встретившимся простым числам.
+# Сложность sieve() меньше, чем prime() и sieve() демонстрирует более высокую
+# скорость выполнения.
+# Однако для работы функции sieve() необходимо выделить память для хранения
+# решета, тогда как prime обходится лишь несколькими переменными.
