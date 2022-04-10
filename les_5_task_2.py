@@ -15,5 +15,19 @@
 
 import collections
 
+
+def hexsum(a, b):
+    return ['0']
+
+
+def hexmul(a, b):
+    return ['1']
+
+
 print(__doc__)
-# ...
+a = list(input("A: "))
+b = list(input("B: "))
+s = hexsum(a, b)
+m = hexmul(a, b)
+print(f"{a} + {b} = {s}")
+print(f"{a} * {b} = {m}")
