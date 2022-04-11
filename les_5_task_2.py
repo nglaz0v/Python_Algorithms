@@ -16,7 +16,7 @@
 from collections import Counter, deque, defaultdict, OrderedDict, namedtuple
 
 
-def hexsum(a: list, b: list) -> list:
+def _hexsum(a: list, b: list) -> list:
     """Сложение двух шестнадцатеричных чисел"""
     ValueCarry = namedtuple("ValueCarry", "value carry")
     addition_table = {
@@ -300,18 +300,73 @@ def hexsum(a: list, b: list) -> list:
     return c[::-1]
 
 
+hex2bin = {'0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7,
+           '8': 8, '9': 9, 'A': 10, 'B': 11, 'C': 12, 'D': 13, 'E': 14, 'F': 15
+           }
+bin2hex = "0123456789ABCDEF"
+
+
+def hexsum(a: list, b: list) -> list:
+    """Сложение двух шестнадцатеричных чисел"""
+    c = []
+    a = a[::-1]
+    b = b[::-1]
+    alen = len(a)
+    blen = len(b)
+    if (alen < blen):
+        a += ['0'] * (blen-alen)
+    elif (blen < alen):
+        b += ['0'] * (alen-blen)
+    carry = '0'
+    for i in range(min(len(a), len(b))):
+        digit = hex2bin[a[i]] + hex2bin[b[i]] + hex2bin[carry]
+        digit_value = bin2hex[digit & 0xF]
+        digit_carry = bin2hex[digit >> 4]
+        c.append(digit_value)
+        carry = digit_carry
+    if carry == '1':
+        c.append('1')
+    return c[::-1]
+
+
 def hexmul(a: list, b: list) -> list:
     """Умножение двух шестнадцатеричных чисел"""
-    return ['1']
+    c = ['0']
+    a = a[::-1]
+    b = b[::-1]
+    alen = len(a)
+    blen = len(b)
+    if (alen < blen):
+        a_, b_ = b, a
+    else:
+        a_, b_ = a, b
+    for j in range(len(b_)):
+        extra = '0'
+        cc = []
+        for i in range(len(a_)):
+            # mul = hex2bin[a_[i]] * hex2bin[b_[j]]
+            # mul_value = bin2hex[mul & 0xF]
+            # mul_extra = bin2hex[mul >> 4]
+            digit = hex2bin[a_[i]] * hex2bin[b_[j]] + hex2bin[extra]
+            digit_value = bin2hex[digit & 0xF]
+            digit_extra = bin2hex[digit >> 4]
+            cc.append(digit_value)
+            extra = digit_extra
+        if extra != '0':
+            cc.append(extra)
+        for k in range(i):
+            cc.append('0')
+        c = hexsum(c, cc)
+    return c[::-1]
 
 
 print(__doc__)
 a = list(input("A: ").upper())
 b = list(input("B: ").upper())
 s = hexsum(a, b)
-#m = hexmul(a, b)
+m = hexmul(a, b)
 print(f"{''.join(a)} + {''.join(b)} = {''.join(s)}")
-#print(f"{''.join(a)} * {''.join(b)} = {''.join(m)}")
+print(f"{''.join(a)} * {''.join(b)} = {''.join(m)}")
 
 #for i in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']:
 #    for j in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']:
