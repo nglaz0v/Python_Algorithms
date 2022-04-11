@@ -6,19 +6,27 @@
 предприятий, чья прибыль выше среднего и ниже среднего.
 """
 
-import collections
+from collections import Counter, deque, OrderedDict, namedtuple
 
 print(__doc__)
-k = int(input("Введите количество предприятий: "))
-enterprises = {}
+k = int(input("Количество предприятий: "))
+enterprises = OrderedDict()
+QuarterProfit = namedtuple("QuarterProfit", "first second third fourth")
 
 for i in range(1, k+1):
-    name = input("Введите название предприятия: ")
-    enterprises[name] = [float(input("План: ")), float(input("Факт: "))]
+    name = input(f"{i} Наименование предприятия: ")
+    fmt = f"{i} Прибыль предприятия за %s квартал: "
+    enterprises[name] = QuarterProfit(
+            float(input(fmt % "1ый")),
+            float(input(fmt % "2ой")),
+            float(input(fmt % "3ий")),
+            float(input(fmt % "4ый"))
+    )
 
-    enterprises[name].append(enterprises[name][1] / enterprises[name][0])
+average_profit = sum(deque(map(sum, deque(enterprises.values())))) / k
+print(f"Средняя прибыль за год = {average_profit}")
 
-print("Фактическая прибыль больше 10, но план не выполнен (меньше 100%)")
-for key, value in enterprises.items():
-    if value[1] > 10 and value[2] < 1:
-        print(f"Предприятие {key} заработало {value[1]}, что составило {value[2] * 100:.2f}%")
+more_less = Counter({name: (sum(profits) - average_profit) for name, profits in
+                     enterprises.items()})
+print(f"Предприятия с прибылью выше среднего: {deque((+more_less).keys())}")
+print(f"Предприятия с прибылью выше среднего: {deque((-more_less).keys())}")
