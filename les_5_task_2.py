@@ -344,9 +344,6 @@ def hexmul(a: list, b: list) -> list:
         extra = '0'
         cc = []
         for i in range(len(a_)):
-            # mul = hex2bin[a_[i]] * hex2bin[b_[j]]
-            # mul_value = bin2hex[mul & 0xF]
-            # mul_extra = bin2hex[mul >> 4]
             digit = hex2bin[a_[i]] * hex2bin[b_[j]] + hex2bin[extra]
             digit_value = bin2hex[digit & 0xF]
             digit_extra = bin2hex[digit >> 4]
@@ -354,10 +351,12 @@ def hexmul(a: list, b: list) -> list:
             extra = digit_extra
         if extra != '0':
             cc.append(extra)
-        for k in range(i):
+        cc = cc[::-1]
+        for k in range(j):
             cc.append('0')
+        # print(cc)
         c = hexsum(c, cc)
-    return c[::-1]
+    return c
 
 
 print(__doc__)
