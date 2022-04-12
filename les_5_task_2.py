@@ -13,7 +13,7 @@
 Вспомните начальную школу и попробуйте написать сложение и умножение в столбик.
 """
 
-from collections import Counter, deque, defaultdict, OrderedDict, namedtuple
+from collections import deque, namedtuple
 
 
 def _hexsum(a: list, b: list) -> list:
@@ -308,30 +308,28 @@ bin2hex = "0123456789ABCDEF"
 
 def hexsum(a: list, b: list) -> list:
     """Сложение двух шестнадцатеричных чисел"""
-    c = []
+    result = []
     a = a[::-1]
     b = b[::-1]
     alen = len(a)
     blen = len(b)
-    if (alen < blen):
-        a += ['0'] * (blen-alen)
-    elif (blen < alen):
-        b += ['0'] * (alen-blen)
-    carry = '0'
-    for i in range(min(len(a), len(b))):
-        digit = hex2bin[a[i]] + hex2bin[b[i]] + hex2bin[carry]
-        digit_value = bin2hex[digit & 0xF]
-        digit_carry = bin2hex[digit >> 4]
-        c.append(digit_value)
-        carry = digit_carry
-    if carry == '1':
-        c.append('1')
-    return c[::-1]
+    a += ['0'] * (blen-alen)
+    b += ['0'] * (alen-blen)
+    assert(len(a) == len(b))
+    carry = 0
+    for i in range(len(a)):
+        digit = hex2bin[a[i]] + hex2bin[b[i]] + carry
+        result.append(bin2hex[digit & 0xF])
+        carry = digit >> 4
+        assert(carry < 2)
+    if carry == 1:
+        result.append('1')
+    return result[::-1]
 
 
 def hexmul(a: list, b: list) -> list:
     """Умножение двух шестнадцатеричных чисел"""
-    c = ['0']
+    result = ['0']
     a = a[::-1]
     b = b[::-1]
     alen = len(a)
@@ -351,21 +349,28 @@ def hexmul(a: list, b: list) -> list:
             extra = digit_extra
         if extra != '0':
             cc.append(extra)
-        cc = cc[::-1]
+        cc.reverse()
         for k in range(j):
             cc.append('0')
         # print(cc)
-        c = hexsum(c, cc)
-    return c
+        result = hexsum(result, cc)
+    return result
+
+
+def calculate(A: str, B: str):
+    a = list(A.upper())
+    b = list(B.upper())
+    s = hexsum(a, b)
+    # m = hexmul(a, b)
+    print(f"{''.join(a)} + {''.join(b)} = {''.join(s)}")
+    # print(f"{''.join(a)} * {''.join(b)} = {''.join(m)}")
 
 
 print(__doc__)
-a = list(input("A: ").upper())
-b = list(input("B: ").upper())
-s = hexsum(a, b)
-m = hexmul(a, b)
-print(f"{''.join(a)} + {''.join(b)} = {''.join(s)}")
-print(f"{''.join(a)} * {''.join(b)} = {''.join(m)}")
+# calculate(input("A: "), input("B: "))
+for (A, B) in [("ff", "1"), ("ff", "2")]:
+    calculate(A, B)
+
 
 #for i in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']:
 #    for j in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']:
