@@ -22,15 +22,15 @@ hex2bin = {'0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7,
 bin2hex = "0123456789ABCDEF"
 
 
-def hexsum(a: list, b: list) -> list:
+def hexsum(x: list, y: list) -> list:
     """Сложение двух шестнадцатеричных чисел"""
     result = deque()
-    a = deque(a[::-1])
-    b = deque(b[::-1])
+    a = deque(x[::-1])
+    b = deque(y[::-1])
     alen = len(a)
     blen = len(b)
-    a += ['0'] * (blen-alen)
-    b += ['0'] * (alen-blen)
+    a.extend(['0'] * (blen-alen))
+    b.extend(['0'] * (alen-blen))
     assert(len(a) == len(b))
     carry = 0
     for i in range(len(a)):
@@ -44,11 +44,11 @@ def hexsum(a: list, b: list) -> list:
     return list(result)
 
 
-def hexmul(a: list, b: list) -> list:
+def hexmul(x: list, y: list) -> list:
     """Умножение двух шестнадцатеричных чисел"""
     result = ['0']
-    a = deque(a[::-1])
-    b = deque(b[::-1])
+    a = deque(x[::-1])
+    b = deque(y[::-1])
     if (len(a) < len(b)):
         a, b = b, a
     for j in range(len(b)):
@@ -62,7 +62,7 @@ def hexmul(a: list, b: list) -> list:
             assert(extra < 16)
         if extra != 0:
             item.appendleft(bin2hex[extra])
-        item += ['0'] * j
+        item.extend(['0'] * j)
         # print(f"{item=}")
         result = hexsum(result, list(item))
     return result
