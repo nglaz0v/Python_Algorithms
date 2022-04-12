@@ -74,6 +74,8 @@ def calculate(A: str, B: str):
     m = hexmul(a, b)
     print(f"{''.join(a)} + {''.join(b)} = {''.join(s)}")
     print(f"{''.join(a)} * {''.join(b)} = {''.join(m)}")
+    assert(int(A, 16) + int(B, 16) == int(''.join(s), 16))
+    assert(int(A, 16) * int(B, 16) == int(''.join(m), 16))
 
 
 print(__doc__)
