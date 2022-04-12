@@ -318,9 +318,10 @@ def hexsum(a: list, b: list) -> list:
     assert(len(a) == len(b))
     carry = 0
     for i in range(len(a)):
-        digit = hex2bin[a[i]] + hex2bin[b[i]] + carry
-        result.append(bin2hex[digit & 0xF])
-        carry = digit >> 4
+        value = hex2bin[a[i]] + hex2bin[b[i]] + carry
+        digit = bin2hex[value & 0xF]
+        result.append(digit)
+        carry = value >> 4
         assert(carry < 2)
     if carry == 1:
         result.append('1')
@@ -332,28 +333,23 @@ def hexmul(a: list, b: list) -> list:
     result = ['0']
     a = a[::-1]
     b = b[::-1]
-    alen = len(a)
-    blen = len(b)
-    if (alen < blen):
-        a_, b_ = b, a
-    else:
-        a_, b_ = a, b
-    for j in range(len(b_)):
-        extra = '0'
-        cc = []
-        for i in range(len(a_)):
-            digit = hex2bin[a_[i]] * hex2bin[b_[j]] + hex2bin[extra]
-            digit_value = bin2hex[digit & 0xF]
-            digit_extra = bin2hex[digit >> 4]
-            cc.append(digit_value)
-            extra = digit_extra
-        if extra != '0':
-            cc.append(extra)
-        cc.reverse()
-        for k in range(j):
-            cc.append('0')
-        # print(cc)
-        result = hexsum(result, cc)
+    if (len(a) < len(b)):
+        a, b = b, a
+    for j in range(len(b)):
+        item = []
+        extra = 0
+        for i in range(len(a)):
+            value = hex2bin[a[i]] * hex2bin[b[j]] + extra
+            digit = bin2hex[value & 0xF]
+            item.append(digit)
+            extra = value >> 4
+            assert(extra < 16)
+        if extra != 0:
+            item.append(bin2hex[extra])
+        item.reverse()
+        item += ['0'] * j
+        # print(f"{item=}")
+        result = hexsum(result, item)
     return result
 
 
@@ -361,9 +357,9 @@ def calculate(A: str, B: str):
     a = list(A.upper())
     b = list(B.upper())
     s = hexsum(a, b)
-    # m = hexmul(a, b)
+    m = hexmul(a, b)
     print(f"{''.join(a)} + {''.join(b)} = {''.join(s)}")
-    # print(f"{''.join(a)} * {''.join(b)} = {''.join(m)}")
+    print(f"{''.join(a)} * {''.join(b)} = {''.join(m)}")
 
 
 print(__doc__)
