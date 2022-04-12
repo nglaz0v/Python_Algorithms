@@ -16,10 +16,10 @@
 from collections import deque
 
 
-hex2bin = {'0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7,
+hex2int = {'0': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7,
            '8': 8, '9': 9, 'A': 10, 'B': 11, 'C': 12, 'D': 13, 'E': 14, 'F': 15
            }
-bin2hex = "0123456789ABCDEF"
+int2hex = "0123456789ABCDEF"
 
 
 def hexsum(x: list, y: list) -> list:
@@ -28,13 +28,14 @@ def hexsum(x: list, y: list) -> list:
     a = deque(x)
     b = deque(y)
     alen, blen = len(a), len(b)
+    # выровнять a и b по длине (дополнить слева нулями)
     a.extendleft(['0'] * (blen-alen))
     b.extendleft(['0'] * (alen-blen))
     assert(len(a) == len(b))
-    carry = 0
+    carry = 0  # перенос в следующий разряд
     for i in range(len(a)):
-        value = hex2bin[a.pop()] + hex2bin[b.pop()] + carry
-        digit = bin2hex[value & 0xF]
+        value = hex2int[a.pop()] + hex2int[b.pop()] + carry
+        digit = int2hex[value & 0xF]  # получить очередную цифру результата
         result.appendleft(digit)
         carry = value >> 4
         assert(carry < 2)
@@ -48,26 +49,27 @@ def hexmul(x: list, y: list) -> list:
     result = ['0']
     b = deque(y)
     for j in range(len(b)):
-        item = deque()
+        item = deque()  # промежуточный результат
         a = deque(x)
-        extra = 0
+        extra = 0  # перенос в следующий разряд
         for i in range(len(a)):
-            value = hex2bin[a[-1]] * hex2bin[b[-1]] + extra
-            digit = bin2hex[value & 0xF]
+            value = hex2int[a[-1]] * hex2int[b[-1]] + extra
+            digit = int2hex[value & 0xF]  # получить очередную цифру результата
             item.appendleft(digit)
             extra = value >> 4
             assert(extra < 16)
             a.pop()
         if extra != 0:
-            item.appendleft(bin2hex[extra])
-        item.extend(['0'] * j)
+            item.appendleft(int2hex[extra])
+        item.extend(['0'] * j)  # дополнить нулями справа
         # print(f"{item=}")
         b.pop()
-        result = hexsum(result, list(item))
+        result = hexsum(result, list(item))  # прибавить промежуточный результат
     return result
 
 
 def calculate(A: str, B: str):
+    """Сложение/умножение двух шестнадцатеричных чисел"""
     a = list(A.upper())
     b = list(B.upper())
     s = hexsum(a, b)
@@ -79,6 +81,9 @@ def calculate(A: str, B: str):
 
 
 print(__doc__)
-# calculate(input("A: "), input("B: "))
-for (A, B) in [("A2", "C4F"), ("ff", "1"), ("ff", "2")]:
-    calculate(A, B)
+# A = input("A: ")
+# B = input("B: ")
+import random
+A = hex(random.randint(0, 1000))[2:]
+B = hex(random.randint(0, 1000))[2:]
+calculate(A, B)
