@@ -29,4 +29,4 @@ print(f"Средняя прибыль за год = {average_profit}")
 more_less = Counter({name: (sum(profits) - average_profit) for name, profits in
                      enterprises.items()})
 print(f"Предприятия с прибылью выше среднего: {deque((+more_less).keys())}")
-print(f"Предприятия с прибылью выше среднего: {deque((-more_less).keys())}")
+print(f"Предприятия с прибылью ниже среднего: {deque((-more_less).keys())}")

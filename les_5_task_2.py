@@ -76,14 +76,10 @@ def calculate(A: str, B: str):
     m = hexmul(a, b)
     print(f"{''.join(a)} + {''.join(b)} = {''.join(s)}")
     print(f"{''.join(a)} * {''.join(b)} = {''.join(m)}")
-    assert(int(A, 16) + int(B, 16) == int(''.join(s), 16))
-    assert(int(A, 16) * int(B, 16) == int(''.join(m), 16))
 
 
 print(__doc__)
-# A = input("A: ")
-# B = input("B: ")
-import random
-A = hex(random.randint(0, 1000))[2:]
-B = hex(random.randint(0, 1000))[2:]
+A = input("A: ")
+B = input("B: ")
 calculate(A, B)
+# calculate("A2", "C4F")
