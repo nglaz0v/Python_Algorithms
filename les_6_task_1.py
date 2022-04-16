@@ -20,50 +20,49 @@ e. написать общий вывод: какой из трёх вариан
 import sys
 import ctypes
 import struct
-from itertools import chain
-from collections import deque
+# from itertools import chain
 
 
-def show_size(x, level=0):
-    """Функция для рекурсивного подсчёта занимаемой объектом памяти"""
-    print('\t' * level, f"id={id(x)}: refcount={sys.getrefcount(x)}, "
-                        f"type={type(x)}, size={sys.getsizeof(x)}, value={repr(x)}")
+def var_info(x, level=0):
+    """Информация о переменной"""
+    print('\t' * level, f"id={id(x)}: refcount={sys.getrefcount(x)},\t"
+                        f"type={type(x)},\tsize={x.__sizeof__()},\t"
+                        f"value={repr(x)}")
     if hasattr(x, "__iter__"):
-        if hasattr(x, "items"):
-            for xx in x.items():
-                show_size(xx, level+1)
+        if isinstance(x, dict):
+            for k in x:
+                var_info(k, level+1)
+                var_info(x[k], level+1)
         elif not isinstance(x, str):
             for xx in x:
-                show_size(xx, level+1)
+                var_info(xx, level+1)
 
 
-def total_size(o, verbose=False):
-    """Returns the approximate memory footprint an object and all of its contents."""
-    dict_handler = lambda d: chain.from_iterable(d.items())
-    all_handlers = {tuple: iter,
-                    frozenset: iter,
-                    list: iter,
-                    set: iter,
-                    dict: dict_handler,
-                    deque: iter
-                    }
-    seen = set()  # track which object id's have already been seen
-    default_size = sys.getsizeof(0)  # estimate sizeof object without __sizeof__
+#def total_size(o, verbose=False):
+#    """Returns the approximate memory footprint an object and all of its contents."""
+#    all_handlers = {tuple: iter,
+#                    frozenset: iter,
+#                    list: iter,
+#                    set: iter,
+#                    dict: lambda d: chain.from_iterable(d.items())
+#                    }
+#    seen = set()  # track which object id's have already been seen
+#    default_size = sys.getsizeof(0)  # estimate sizeof object without __sizeof__
 
-    def sizeof(o):
-        if id(o) in seen:  # do not double count the same object
-            return 0
-        seen.add(id(o))
-        s = sys.getsizeof(o, default_size)
-        if verbose:
-            print(s, type(o), repr(o))
-        for typ, handler in all_handlers.items():
-            if isinstance(o, typ):
-                s += sum(map(sizeof, handler(o)))
-                break
-        return s
+#    def sizeof(o):
+#        if id(o) in seen:  # do not double count the same object
+#            return 0
+#        seen.add(id(o))
+#        s = sys.getsizeof(o, default_size)
+#        if verbose:
+#            print(s, type(o), repr(o))
+#        for typ, handler in all_handlers.items():
+#            if isinstance(o, typ):
+#                s += sum(map(sizeof, handler(o)))
+#                break
+#        return s
 
-    return sizeof(o)
+#    return sizeof(o)
 
 
 def reverse_1(number):
@@ -104,8 +103,8 @@ def test_task(n):
 if __name__ == "__main__":
     test_task(92233720368547758070)
 
-    d = dict(a=1, b=2, c=3, d=[4,5,6,7], e='a string of chars')
-    print(total_size(d, verbose=True))
+    # d = dict(a=1, b=2, c=3, d=[4,5,6,7], e='a string of chars')
+    # print(total_size(d, verbose=True))
 
     # неизменяемые типы
     bX = True  # bool
@@ -137,8 +136,8 @@ if __name__ == "__main__":
 
     for X in (bX, iX, fX, cX, sX, tX, lX, nX, dX):
         print("{}   \t{}\t{}".format(type(X), sys.getsizeof(X), struct.unpack(fmt[id(type(X))], ctypes.string_at(id(X), X.__sizeof__()))))
-        show_size(X)
-        total_size(X, verbose=True)
+        var_info(X)
+        # total_size(X, verbose=True)
 
 
 # TODO: ВЫВОД
