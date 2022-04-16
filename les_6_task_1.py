@@ -17,6 +17,54 @@ e. написать общий вывод: какой из трёх вариан
 универсальный код для замера памяти.
 """
 
+import sys
+import ctypes
+import struct
+from itertools import chain
+from collections import deque
+
+
+def show_size(x, level=0):
+    """Функция для рекурсивного подсчёта занимаемой объектом памяти"""
+    print('\t' * level, f"id={id(x)}: refcount={sys.getrefcount(x)}, "
+                        f"type={type(x)}, size={sys.getsizeof(x)}, value={repr(x)}")
+    if hasattr(x, "__iter__"):
+        if hasattr(x, "items"):
+            for xx in x.items():
+                show_size(xx, level+1)
+        elif not isinstance(x, str):
+            for xx in x:
+                show_size(xx, level+1)
+
+
+def total_size(o, verbose=False):
+    """Returns the approximate memory footprint an object and all of its contents."""
+    dict_handler = lambda d: chain.from_iterable(d.items())
+    all_handlers = {tuple: iter,
+                    frozenset: iter,
+                    list: iter,
+                    set: iter,
+                    dict: dict_handler,
+                    deque: iter
+                    }
+    seen = set()  # track which object id's have already been seen
+    default_size = sys.getsizeof(0)  # estimate sizeof object without __sizeof__
+
+    def sizeof(o):
+        if id(o) in seen:  # do not double count the same object
+            return 0
+        seen.add(id(o))
+        s = sys.getsizeof(o, default_size)
+        if verbose:
+            print(s, type(o), repr(o))
+        for typ, handler in all_handlers.items():
+            if isinstance(o, typ):
+                s += sum(map(sizeof, handler(o)))
+                break
+        return s
+
+    return sizeof(o)
+
 
 def reverse_1(number):
     """Инвертировать порядок цифр натурального числа (числовая версия)"""
@@ -55,5 +103,42 @@ def test_task(n):
 
 if __name__ == "__main__":
     test_task(92233720368547758070)
+
+    d = dict(a=1, b=2, c=3, d=[4,5,6,7], e='a string of chars')
+    print(total_size(d, verbose=True))
+
+    # неизменяемые типы
+    bX = True  # bool
+    iX = 5  # int
+    fX = 125.54  # float
+    cX = 1-1j  # complex
+    sX = "Hello, world!"  # str
+    tX = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)  # tuple
+    # fsX = frozenset(tX)  # frozenset
+    # изменяемые типы
+    lX = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]  # list
+    nX = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}  # set
+    dX = {_: _ for _ in lX}  # dict
+
+    fmt_py_obj = 'nP'  # ob_refcnt + ob_type
+    fmt_py_obj_var = fmt_py_obj + 'n'  # ... + ob_size
+    fmt = {
+        id(type(iX)): fmt_py_obj_var + 'i',  # ... + ob_digit
+        id(type(fX)): fmt_py_obj + 'd',  # ... + ob_fval
+        id(type(cX)): fmt_py_obj + 'dd',  # ... + real + imag
+        id(type(sX)): fmt_py_obj_var + 'nQQ' + 'c'*(len(sX)+1),  # ... + ob_shash + QW + QW + ...
+        id(type(tX)): fmt_py_obj_var + 'P'*len(tX),  # ... + ob_item + ...
+        id(type(lX)): fmt_py_obj_var + 'Pn' + 'P'*len(lX),  # ... + ob_item + allocated + ...
+        id(type(nX)): fmt_py_obj + 'nnnPnn' + 'Pn'*8 + 'P' + 'P'*64,  # ... + fill + used + mask + table + hash + finger + smalltable + weakreflist + ...
+        id(type(dX)): fmt_py_obj + 'n' + 'PPP'*len(dX) + 'P'*len(dX),  # ... + ma_used + ...
+        id(type(bX)): fmt_py_obj_var + 'i'  # ... + ob_digit + ...
+        }
+    # print(fmt)
+
+    for X in (bX, iX, fX, cX, sX, tX, lX, nX, dX):
+        print("{}   \t{}\t{}".format(type(X), sys.getsizeof(X), struct.unpack(fmt[id(type(X))], ctypes.string_at(id(X), X.__sizeof__()))))
+        show_size(X)
+        total_size(X, verbose=True)
+
 
 # TODO: ВЫВОД
