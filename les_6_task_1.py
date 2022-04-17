@@ -23,11 +23,40 @@ import struct
 # from itertools import chain
 
 
+def mem_dump(x):
+    fmt_py_obj = 'nP'  # ob_refcnt + ob_type
+    fmt_py_obj_var = fmt_py_obj + 'n'  # ... + ob_size
+    fmt = ""
+    sz = x.__sizeof__()
+    if isinstance(x, int):
+        fmt = fmt_py_obj_var + 'i',  # ... + ob_digit
+        sz = 28
+    elif isinstance(x, float):
+        fmt = fmt_py_obj + 'd',  # ... + ob_fval
+    elif isinstance(x, complex):
+        fmt = fmt_py_obj + 'dd',  # ... + real + imag
+    elif isinstance(x, bool):
+        fmt = fmt_py_obj_var + 'i'  # ... + ob_digit
+    elif isinstance(x, str):
+        fmt = fmt_py_obj_var + 'nQQ' + 'c'*(len(x)+1),  # ... + ob_shash + QW + QW + ...
+    elif isinstance(x, tuple):
+        fmt = fmt_py_obj_var + 'P'*len(x),  # ... + ob_item + ...
+    elif isinstance(x, list):
+        fmt = fmt_py_obj_var + 'Pn' + 'P'*len(x),  # ... + ob_item + allocated + ...
+    elif isinstance(x, set):
+        fmt = fmt_py_obj + 'nnnPnn' + 'Pn'*8 + 'P' + 'P'*64,  # ... + fill + used + mask + table + hash + finger + smalltable + weakreflist + ...
+    elif isinstance(x, dict):
+        fmt = fmt_py_obj + 'n' + 'PPP'*len(x) + 'P'*len(x),  # ... + ma_used + ...
+    dump = struct.unpack(fmt[0], ctypes.string_at(id(x), sz))
+    print(dump)
+
+
 def var_info(x, level=0):
     """Информация о переменной"""
     print('\t' * level, f"id={id(x)}: refcount={sys.getrefcount(x)},\t"
                         f"type={type(x)},\tsize={x.__sizeof__()},\t"
                         f"value={repr(x)}")
+    mem_dump(x)
     if hasattr(x, "__iter__"):
         if isinstance(x, dict):
             for k in x:
@@ -130,7 +159,7 @@ if __name__ == "__main__":
         id(type(lX)): fmt_py_obj_var + 'Pn' + 'P'*len(lX),  # ... + ob_item + allocated + ...
         id(type(nX)): fmt_py_obj + 'nnnPnn' + 'Pn'*8 + 'P' + 'P'*64,  # ... + fill + used + mask + table + hash + finger + smalltable + weakreflist + ...
         id(type(dX)): fmt_py_obj + 'n' + 'PPP'*len(dX) + 'P'*len(dX),  # ... + ma_used + ...
-        id(type(bX)): fmt_py_obj_var + 'i'  # ... + ob_digit + ...
+        id(type(bX)): fmt_py_obj_var + 'i'  # ... + ob_digit
         }
     # print(fmt)
 
