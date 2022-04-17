@@ -30,7 +30,7 @@ def mem_dump(x):
     Long = namedtuple("Long", VarObject._fields + ("digit",), defaults=[0])
     Float = namedtuple("Float", Object._fields + ("fval",))
     Complex = namedtuple("Complex", Object._fields + ("real", "imag"))
-    Bool = namedtuple("Bool", Long._fields)
+    Bool = namedtuple("Bool", Long._fields, defaults=[0])
     Bytes = namedtuple("Bytes", VarObject._fields + ("shash", "undef1", "undef2", "chars"))
     Tuple = namedtuple("Tuple", VarObject._fields + ("items",))
     List = namedtuple("List", VarObject._fields + ("id_items", "allocated"))
@@ -47,48 +47,52 @@ def mem_dump(x):
     if isinstance(x, int):
         header = struct.unpack(fmt_py_obj_var, ctypes.string_at(addr, sz_py_obj_var))
         var_obj = VarObject._make(header)
-        fmt = fmt_py_obj_var + 'i'*var_obj.size  # ... + ob_digit
+        fmt = fmt_py_obj_var + 'i'*abs(var_obj.size)  # ... + ob_digit
         dump = struct.unpack(fmt, ctypes.string_at(addr, size))
         if isinstance(x, bool):
             assert var_obj.size < 2
             print(Bool(*dump))
         else:
-            print(Long(*dump))
+            k = len(Long._fields) - 1
+            print(Long(*(*(dump[:k]), dump[k:])))
     elif isinstance(x, float):
         fmt = fmt_py_obj + 'd'  # ... + ob_fval
         dump = struct.unpack(fmt, ctypes.string_at(addr, size))
-        print(Float._make(dump))
+        print(Float(*dump))
     elif isinstance(x, complex):
         fmt = fmt_py_obj + 'dd'  # ... + real + imag
         dump = struct.unpack(fmt, ctypes.string_at(addr, size))
-        print(Complex._make(dump))
+        print(Complex(*dump))
     elif isinstance(x, str):
-        fmt = fmt_py_obj_var + 'nQQ' + 'c'*(len(x)+1)  # ... + ob_shash + QW + QW + ...
+        fmt = fmt_py_obj_var + 'nQQ' + 'c'*(3 if len(x) == 0 else len(x)+1)  # ... + ob_shash + QW + QW + ...
         dump = struct.unpack(fmt, ctypes.string_at(addr, size))
-        print(dump)
+        k = len(Bytes._fields) - 1
+        print(Bytes(*(*(dump[:k]), dump[k:])))
     elif isinstance(x, tuple):
         fmt = fmt_py_obj_var + 'P'*len(x)  # ... + ob_item + ...
         dump = struct.unpack(fmt, ctypes.string_at(addr, size))
-        print(dump)
+        k = len(Tuple._fields) - 1
+        print(Tuple(*(*(dump[:k]), dump[k:])))
     elif isinstance(x, list):
-        fmt = fmt_py_obj_var + 'Pn' + 'P'*len(x)  # ... + ob_item + allocated + ...
-        dump = struct.unpack(fmt, ctypes.string_at(addr, size))
-        print(dump)
+        fmt = fmt_py_obj_var + 'Pn'  # ... + ob_item + allocated
+        dump = struct.unpack(fmt, ctypes.string_at(addr, sz_py_obj_var+8+8))
+        print(List(*dump))
     elif isinstance(x, set):
-        fmt = fmt_py_obj + 'nnnPnn' + 'Pn'*8 + 'P' + 'P'*64  # ... + fill + used + mask + table + hash + finger + smalltable + weakreflist + ...
-        dump = struct.unpack(fmt, ctypes.string_at(addr, size))
-        print(dump)
+        fmt = fmt_py_obj + 'nnnPnn' + 'Pn'*8 + 'P'  # ... + fill + used + mask + table + hash + finger + smalltable + weakreflist
+        dump = struct.unpack(fmt, ctypes.string_at(addr, sz_py_obj+8*23))
+        k = len(Set._fields) - 1
+        print(Set(*(*(dump[:k]), dump[k:])))
     elif isinstance(x, dict):
-        fmt = fmt_py_obj + 'n' + 'PPP'*len(x) + 'P'*len(x)  # ... + ma_used + ...
-        dump = struct.unpack(fmt, ctypes.string_at(addr, size))
-        print(dump)
+        fmt = fmt_py_obj + 'nLPP'  # ... + ma_used + ma_version_tag + ma_keys + ma_values
+        dump = struct.unpack(fmt, ctypes.string_at(addr, sz_py_obj+8*4))
+        print(Dict(*dump))
 
 
 def var_info(x, level=0):
     """Информация о переменной"""
-    print('\t' * level, f"id={id(x)}: refcount={sys.getrefcount(x)},\t"
-                        f"type={type(x)},\tsize={x.__sizeof__()},\t"
-                        f"value={repr(x)}")
+    print('\t' * level + f"id={id(x)}: sizeof={x.__sizeof__()},\t"
+                         f"refcount={sys.getrefcount(x)},\ttype={type(x)},\t"
+                         f"value={repr(x)}")
     mem_dump(x)
     if hasattr(x, "__iter__"):
         if isinstance(x, dict):
@@ -164,6 +168,7 @@ def test_task(n):
 
 if __name__ == "__main__":
     test_task(92233720368547758070)
+    print(f"System: {sys.platform};\tPython: {sys.version}")
 
     # d = dict(a=1, b=2, c=3, d=[4,5,6,7], e='a string of chars')
     # print(total_size(d, verbose=True))
@@ -189,15 +194,18 @@ if __name__ == "__main__":
         id(type(cX)): fmt_py_obj + 'dd',  # ... + real + imag
         id(type(sX)): fmt_py_obj_var + 'nQQ' + 'c'*(len(sX)+1),  # ... + ob_shash + QW + QW + ...
         id(type(tX)): fmt_py_obj_var + 'P'*len(tX),  # ... + ob_item + ...
-        id(type(lX)): fmt_py_obj_var + 'Pn' + 'P'*len(lX),  # ... + ob_item + allocated + ...
-        id(type(nX)): fmt_py_obj + 'nnnPnn' + 'Pn'*8 + 'P' + 'P'*64,  # ... + fill + used + mask + table + hash + finger + smalltable + weakreflist + ...
-        id(type(dX)): fmt_py_obj + 'n' + 'PPP'*len(dX) + 'P'*len(dX),  # ... + ma_used + ...
+        id(type(lX)): fmt_py_obj_var + 'Pn' + 'P'*len(lX),  # ... + ob_item + allocated
+        id(type(nX)): fmt_py_obj + 'nnnPnn' + 'Pn'*8 + 'P' + 'P'*64,  # ... + fill + used + mask + table + hash + finger + smalltable + weakreflist
+        id(type(dX)): fmt_py_obj + 'n' + 'PPP'*len(dX) + 'P'*len(dX),  # ... + ma_used + ma_version_tag + ma_keys + ma_values
         id(type(bX)): fmt_py_obj_var + 'i'  # ... + ob_digit
         }
     # print(fmt)
 
-    for X in (bX, iX, fX, cX, sX, tX, lX, nX, dX):
-        print("{}   \t{}\t{}".format(type(X), sys.getsizeof(X), struct.unpack(fmt[id(type(X))], ctypes.string_at(id(X), X.__sizeof__()))))
+    for X in (False, True, -100, 0, 10, 10**3, 10**20, 1/2, -1j, 1-0j):
+        var_info(X)
+
+    for X in (str(), tuple(), list(), set(), dict(), sX, tX, lX, nX, dX):
+        # print("{}   \t{}\t{}".format(type(X), sys.getsizeof(X), struct.unpack(fmt[id(type(X))], ctypes.string_at(id(X), X.__sizeof__()))))
         var_info(X)
         # total_size(X, verbose=True)
 
