@@ -24,7 +24,7 @@ from collections import namedtuple
 # from itertools import chain
 
 
-def mem_dump(x):
+def mem_dump(addr, size):
     Object = namedtuple("Object", ("refcnt", "type"))
     VarObject = namedtuple("VarObject", Object._fields + ("size",))
     Long = namedtuple("Long", VarObject._fields + ("digit",), defaults=[0])
@@ -42,47 +42,52 @@ def mem_dump(x):
     fmt_py_obj_var = fmt_py_obj + 'n'  # ... + ob_size
     sz_py_obj_var = sz_py_obj + 8
 
-    addr = id(x)
-    size = x.__sizeof__()
-    if isinstance(x, int):
+    header = struct.unpack(fmt_py_obj, ctypes.string_at(addr, sz_py_obj))
+    obj = Object._make(header)
+    if (obj.type == id(type(int()))) or (obj.type == id(type(bool()))):
         header = struct.unpack(fmt_py_obj_var, ctypes.string_at(addr, sz_py_obj_var))
         var_obj = VarObject._make(header)
         fmt = fmt_py_obj_var + 'i'*abs(var_obj.size)  # ... + ob_digit
         dump = struct.unpack(fmt, ctypes.string_at(addr, size))
-        if isinstance(x, bool):
+        if (obj.type == id(type(bool()))):
             assert var_obj.size < 2
             print(Bool(*dump))
         else:
             k = len(Long._fields) - 1
             print(Long(*(*(dump[:k]), dump[k:])))
-    elif isinstance(x, float):
+    elif obj.type == id(type(float())):
         fmt = fmt_py_obj + 'd'  # ... + ob_fval
         dump = struct.unpack(fmt, ctypes.string_at(addr, size))
         print(Float(*dump))
-    elif isinstance(x, complex):
+    elif obj.type == id(type(complex())):
         fmt = fmt_py_obj + 'dd'  # ... + real + imag
         dump = struct.unpack(fmt, ctypes.string_at(addr, size))
         print(Complex(*dump))
-    elif isinstance(x, str):
-        fmt = fmt_py_obj_var + 'nQQ' + 'c'*(3 if len(x) == 0 else len(x)+1)  # ... + ob_shash + QW + QW + ...
+    elif obj.type == id(type(str())):
+        header = struct.unpack(fmt_py_obj_var, ctypes.string_at(addr, sz_py_obj_var))
+        var_obj = VarObject._make(header)
+        len_x = abs(var_obj.size)
+        fmt = fmt_py_obj_var + 'nQQ' + 'c'*(3 if len_x == 0 else len_x+1)  # ... + ob_shash + QW + QW + ...
         dump = struct.unpack(fmt, ctypes.string_at(addr, size))
         k = len(Bytes._fields) - 1
         print(Bytes(*(*(dump[:k]), dump[k:])))
-    elif isinstance(x, tuple):
-        fmt = fmt_py_obj_var + 'P'*len(x)  # ... + ob_item + ...
+    elif obj.type == id(type(tuple())):
+        header = struct.unpack(fmt_py_obj_var, ctypes.string_at(addr, sz_py_obj_var))
+        var_obj = VarObject._make(header)
+        fmt = fmt_py_obj_var + 'P'*abs(var_obj.size)  # ... + ob_item + ...
         dump = struct.unpack(fmt, ctypes.string_at(addr, size))
         k = len(Tuple._fields) - 1
         print(Tuple(*(*(dump[:k]), dump[k:])))
-    elif isinstance(x, list):
+    elif obj.type == id(type(list())):
         fmt = fmt_py_obj_var + 'Pn'  # ... + ob_item + allocated
         dump = struct.unpack(fmt, ctypes.string_at(addr, sz_py_obj_var+8+8))
         print(List(*dump))
-    elif isinstance(x, set):
+    elif obj.type == id(type(set())):
         fmt = fmt_py_obj + 'nnnPnn' + 'Pn'*8 + 'P'  # ... + fill + used + mask + table + hash + finger + smalltable + weakreflist
         dump = struct.unpack(fmt, ctypes.string_at(addr, sz_py_obj+8*23))
         k = len(Set._fields) - 1
         print(Set(*(*(dump[:k]), dump[k:])))
-    elif isinstance(x, dict):
+    elif obj.type == id(type(dict())):
         fmt = fmt_py_obj + 'nLPP'  # ... + ma_used + ma_version_tag + ma_keys + ma_values
         dump = struct.unpack(fmt, ctypes.string_at(addr, sz_py_obj+8*4))
         print(Dict(*dump))
@@ -93,7 +98,7 @@ def var_info(x, level=0):
     print('\t' * level + f"id={id(x)}: sizeof={x.__sizeof__()},\t"
                          f"refcount={sys.getrefcount(x)},\ttype={type(x)},\t"
                          f"value={repr(x)}")
-    mem_dump(x)
+    mem_dump(id(x), x.__sizeof__())
     if hasattr(x, "__iter__"):
         if isinstance(x, dict):
             for k in x:
