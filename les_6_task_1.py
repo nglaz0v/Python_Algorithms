@@ -42,15 +42,17 @@ def mem_dump(addr, size):
     fmt_py_obj_var = fmt_py_obj + 'n'  # ... + ob_size
     sz_py_obj_var = sz_py_obj + 8
 
-    header = struct.unpack(fmt_py_obj, ctypes.string_at(addr, sz_py_obj))
-    obj = Object._make(header)
+    head = struct.unpack(fmt_py_obj, ctypes.string_at(addr, sz_py_obj))
+    obj = Object._make(head)
+
+    var_head = struct.unpack(fmt_py_obj_var, ctypes.string_at(addr, sz_py_obj_var))
+    var_obj = VarObject._make(var_head)
+
     if (obj.type == id(type(int()))) or (obj.type == id(type(bool()))):
-        header = struct.unpack(fmt_py_obj_var, ctypes.string_at(addr, sz_py_obj_var))
-        var_obj = VarObject._make(header)
         fmt = fmt_py_obj_var + 'i'*abs(var_obj.size)  # ... + ob_digit
         dump = struct.unpack(fmt, ctypes.string_at(addr, size))
         if (obj.type == id(type(bool()))):
-            assert var_obj.size < 2
+            assert abs(var_obj.size) < 2
             print(Bool(*dump))
         else:
             k = len(Long._fields) - 1
@@ -64,16 +66,12 @@ def mem_dump(addr, size):
         dump = struct.unpack(fmt, ctypes.string_at(addr, size))
         print(Complex(*dump))
     elif obj.type == id(type(str())):
-        header = struct.unpack(fmt_py_obj_var, ctypes.string_at(addr, sz_py_obj_var))
-        var_obj = VarObject._make(header)
         len_x = abs(var_obj.size)
-        fmt = fmt_py_obj_var + 'nQQ' + 'c'*(3 if len_x == 0 else len_x+1)  # ... + ob_shash + QW + QW + ...
+        fmt = fmt_py_obj_var + 'nQQ' + 'c'*(len_x+1)  # ... + ob_shash + QW + QW + ...
         dump = struct.unpack(fmt, ctypes.string_at(addr, size))
         k = len(Bytes._fields) - 1
         print(Bytes(*(*(dump[:k]), dump[k:])))
     elif obj.type == id(type(tuple())):
-        header = struct.unpack(fmt_py_obj_var, ctypes.string_at(addr, sz_py_obj_var))
-        var_obj = VarObject._make(header)
         fmt = fmt_py_obj_var + 'P'*abs(var_obj.size)  # ... + ob_item + ...
         dump = struct.unpack(fmt, ctypes.string_at(addr, size))
         k = len(Tuple._fields) - 1
@@ -98,7 +96,7 @@ def var_info(x, level=0):
     print('\t' * level + f"id={id(x)}: sizeof={x.__sizeof__()},\t"
                          f"refcount={sys.getrefcount(x)},\ttype={type(x)},\t"
                          f"value={repr(x)}")
-    mem_dump(id(x), x.__sizeof__())
+    # mem_dump(id(x), x.__sizeof__())
     if hasattr(x, "__iter__"):
         if isinstance(x, dict):
             for k in x:
@@ -208,10 +206,12 @@ if __name__ == "__main__":
 
     for X in (False, True, -100, 0, 10, 10**3, 10**20, 1/2, -1j, 1-0j):
         var_info(X)
+        mem_dump(id(X), X.__sizeof__())
 
     for X in (str(), tuple(), list(), set(), dict(), sX, tX, lX, nX, dX):
         # print("{}   \t{}\t{}".format(type(X), sys.getsizeof(X), struct.unpack(fmt[id(type(X))], ctypes.string_at(id(X), X.__sizeof__()))))
         var_info(X)
+        mem_dump(id(X), X.__sizeof__())
         # total_size(X, verbose=True)
 
 
