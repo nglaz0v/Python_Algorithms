@@ -36,7 +36,7 @@ Set = namedtuple("Set", Object._fields + ("fill", "used", "mask", "id_table", "h
 Dict = namedtuple("Dict", Object._fields + ("used", "version_tag", "id_keys", "id_values"))
 
 
-def mem_dump(addr, size, level=0):
+def mem_dump(addr, level=0):
     fmt_py_obj = 'nP'  # ob_refcnt + ob_type
     sz_py_obj = 8 + 8
     fmt_py_obj_var = fmt_py_obj + 'n'  # ... + ob_size
@@ -51,6 +51,7 @@ def mem_dump(addr, size, level=0):
     info = None
     if (obj.type == id(type(int()))) or (obj.type == id(type(bool()))):
         fmt = fmt_py_obj_var + 'i'*abs(var_obj.size)  # ... + ob_digit
+        size = sz_py_obj_var + 4*abs(var_obj.size)
         dump = struct.unpack(fmt, ctypes.string_at(addr, size))
         if (obj.type == id(type(bool()))):
             assert abs(var_obj.size) < 2
@@ -60,37 +61,44 @@ def mem_dump(addr, size, level=0):
             info = Long(*(*(dump[:k]), dump[k:]))
     elif obj.type == id(type(float())):
         fmt = fmt_py_obj + 'd'  # ... + ob_fval
+        size = sz_py_obj + 8
         dump = struct.unpack(fmt, ctypes.string_at(addr, size))
         info = Float(*dump)
     elif obj.type == id(type(complex())):
         fmt = fmt_py_obj + 'dd'  # ... + real + imag
+        size = sz_py_obj + 8*2
         dump = struct.unpack(fmt, ctypes.string_at(addr, size))
         info = Complex(*dump)
     elif obj.type == id(type(str())):
         len_x = abs(var_obj.size)
         fmt = fmt_py_obj_var + 'nQQ' + 'c'*(len_x+1)  # ... + ob_shash + QW + QW + ...
+        size = sz_py_obj_var + 8*3 + abs(len_x+1)
         dump = struct.unpack(fmt, ctypes.string_at(addr, size))
         k = len(Unicode._fields) - 1
         info = Unicode(*(*(dump[:k]), dump[k:]))
     elif obj.type == id(type(tuple())):
         fmt = fmt_py_obj_var + 'P'*abs(var_obj.size)  # ... + ob_item + ...
+        size = sz_py_obj_var + 8*abs(var_obj.size)
         dump = struct.unpack(fmt, ctypes.string_at(addr, size))
         k = len(Tuple._fields) - 1
         info = Tuple(*(*(dump[:k]), dump[k:]))
     elif obj.type == id(type(list())):
         fmt = fmt_py_obj_var + 'Pn'  # ... + ob_item + allocated
-        dump = struct.unpack(fmt, ctypes.string_at(addr, sz_py_obj_var+8+8))
+        size = sz_py_obj_var + 8*2
+        dump = struct.unpack(fmt, ctypes.string_at(addr, size))
         info = List(*dump)
     elif obj.type == id(type(set())):
         fmt = fmt_py_obj + 'nnnPnn' + 'Pn'*8 + 'P'  # ... + fill + used + mask + table + hash + finger + smalltable + weakreflist
-        dump = struct.unpack(fmt, ctypes.string_at(addr, sz_py_obj+8*23))
+        size = sz_py_obj + 8*6 + 8*2*8 + 8
+        dump = struct.unpack(fmt, ctypes.string_at(addr, size))
         k = len(Set._fields) - 1
         info = Set(*(*(dump[:k]), dump[k:]))
     elif obj.type == id(type(dict())):
         fmt = fmt_py_obj + 'nLPP'  # ... + ma_used + ma_version_tag + ma_keys + ma_values
-        dump = struct.unpack(fmt, ctypes.string_at(addr, sz_py_obj+8*4))
+        size = sz_py_obj+8*4
+        dump = struct.unpack(fmt, ctypes.string_at(addr, size))
         info = Dict(*dump)
-    print('\t' * level + f"{info}")
+    print('\t' * level + f"[{addr}]: {info}")
     return info
 
 
@@ -207,16 +215,16 @@ if __name__ == "__main__":
 #        }
 #    # print(fmt)
 
-#    for X in (False, True, -100, 0, 10, 10**3, 10**20, 1/2, -1j, 1-0j):
-#        # var_info(X)
-#        print(f"id={id(X)}: value={repr(X)}\tclass={type(X)}\tsizeof={sys.getsizeof(X)}\t", end='')
-#        mem_dump(id(X), X.__sizeof__())
+    for X in (False, True, -100, 0, 10, 10**3, 10**20, 1/2, -1j, 1-0j):
+        # var_info(X)
+        print(f"id={id(X)}: value={repr(X)}\tclass={type(X)}\tsizeof={sys.getsizeof(X)}\t", end='')
+        mem_dump(id(X))
 
     for X in (str(), tuple(), list(), set(), dict(), sX, tX, lX, nX, dX):
         # print("{}   \t{}\t{}".format(type(X), sys.getsizeof(X), struct.unpack(fmt[id(type(X))], ctypes.string_at(id(X), X.__sizeof__()))))
         var_info(X)
-        print(f"id={id(X)}: value={repr(X)}\tclass={type(X)}\tsizeof={sys.getsizeof(X)}\t", end='')
-        mem_dump(id(X), X.__sizeof__())
+        print(f"id={id(X)}: value={repr(X)}\tclass={type(X)}\tsizeof={sys.getsizeof(X)}\t")
+        mem_dump(id(X))
         # total_size(X, verbose=True)
 
 
