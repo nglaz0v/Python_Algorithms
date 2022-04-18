@@ -99,6 +99,17 @@ def mem_dump(addr, level=0):
         dump = struct.unpack(fmt, ctypes.string_at(addr, size))
         info = Dict(*dump)
     print('\t' * level + f"[{addr}]: {info}")
+    if obj.type == id(type(tuple())):
+        for item in info.items:
+            mem_dump(item, level+1)
+    elif obj.type == id(type(list())):
+        items = struct.unpack('L'*abs(var_obj.size), ctypes.string_at(info.id_items, 8*abs(var_obj.size)))
+        for item in items:
+            mem_dump(item, level+1)
+    elif obj.type == id(type(set())):
+        pass
+    elif obj.type == id(type(dict())):
+        pass
     return info
 
 
