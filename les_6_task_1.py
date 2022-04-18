@@ -158,6 +158,14 @@ def var_info(x, level=0):
 #    return sizeof(o)
 
 
+def func_vars(fname, fvars):
+    print(f"--- {fname} ---")
+    for name, X in fvars:
+        print(f"name={name} id={id(X)}: value={repr(X)}\tclass={type(X)}\tsizeof={sys.getsizeof(X)}\t")
+        mem_dump(id(X))
+    print("="*20)
+
+
 def reverse_1(number):
     """Инвертировать порядок цифр натурального числа (числовая версия)"""
     result = 0
@@ -166,6 +174,7 @@ def reverse_1(number):
         result *= 10
         result += digit
         number //= 10
+    func_vars(reverse_1.__name__, locals().items())
     return result
 
 
@@ -175,13 +184,22 @@ def reverse_2(number):
         if (len(number) == 1):
             return number
         else:
-            return invert(number[1:]) + number[:1]
+            head = number[1:]
+            tail = number[:1]
+            inv_head = invert(head)
+            result = inv_head + tail
+            func_vars(reverse_2.__name__, locals().items())
+            return result
     return int(invert(str(number)))
 
 
 def reverse_3(number):
     """Инвертировать порядок цифр натурального числа (версия со срезами)"""
-    return int(str(number)[::-1])
+    str_num = str(number)
+    rev_str_num = str_num[::-1]
+    result = int(rev_str_num)
+    func_vars(reverse_3.__name__, locals().items())
+    return result
 
 
 def test_task(n):
@@ -219,7 +237,7 @@ def test_mem_dump():
 
 if __name__ == "__main__":
     print(f"System: {sys.platform};\tPython: {sys.version}")
-    test_mem_dump()
+    # test_mem_dump()
     test_task(92233720368547758070)
 
 
