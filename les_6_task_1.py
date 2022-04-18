@@ -159,6 +159,7 @@ def func_vars(fname, fvars):
     for name, X in fvars:
         print(f"name={name} id={id(X)}: value={repr(X)}\tclass={type(X)}\tsizeof={sys.getsizeof(X)}\t")
         mem_dump(id(X))
+    print(f"Memory used: {sum(map(sys.getsizeof, (X for _, X in fvars)))} bytes")
     print("="*20)
 
 
