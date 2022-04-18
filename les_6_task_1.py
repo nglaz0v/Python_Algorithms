@@ -218,6 +218,7 @@ def test_mem_dump():
     """Проверка: тестирование функций работы с памятью"""
     # d = dict(a=1, b=2, c=3, d=[4,5,6,7], e='a string of chars')
     # print(total_size(d, verbose=True))
+    print("-"*40)
 
     sX = "0123456789"  # str
     tX = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)  # tuple
@@ -227,15 +228,18 @@ def test_mem_dump():
 
     for X in (False, True, -100, 0, 10, 10**3, 10**20, 1/2, -1j, 1-0j):
         # var_info(X)
-        print(f"id={id(X)}: value={repr(X)}\tclass={type(X)}\tsizeof={sys.getsizeof(X)}\t", end='')
+        print(f"id={id(X)}: value={repr(X)}\tclass={type(X)}\tsizeof={sys.getsizeof(X)}\t")
         mem_dump(id(X))
+        print()
 
     for X in (str(), tuple(), list(), set(), dict(), sX, tX, lX, nX, dX):
         # print("{}   \t{}\t{}".format(type(X), sys.getsizeof(X), struct.unpack(fmt[id(type(X))], ctypes.string_at(id(X), X.__sizeof__()))))
-        var_info(X)
+        # var_info(X)
         print(f"id={id(X)}: value={repr(X)}\tclass={type(X)}\tsizeof={sys.getsizeof(X)}\t")
         mem_dump(id(X))
+        print()
         # total_size(X, verbose=True)
+    print("="*40)
 
 
 if __name__ == "__main__":
