@@ -131,31 +131,27 @@ def var_info(x, level=0):
                 var_info(xx, level+1)
 
 
-#def total_size(o, verbose=False):
-#    """Returns the approximate memory footprint an object and all of its contents."""
-#    all_handlers = {tuple: iter,
-#                    frozenset: iter,
-#                    list: iter,
-#                    set: iter,
-#                    dict: lambda d: chain.from_iterable(d.items())
-#                    }
-#    seen = set()  # track which object id's have already been seen
-#    default_size = sys.getsizeof(0)  # estimate sizeof object without __sizeof__
+def total_size(obj, verbose=False):
+    """Приблизительный объём памяти объекта и всего его содержимого"""
+    seen = set()  # чтобы отслеживать, какие объекты уже были учтены
+    default_size = sys.getsizeof(0)  # оценить размер объекта без __sizeof__
 
-#    def sizeof(o):
-#        if id(o) in seen:  # do not double count the same object
-#            return 0
-#        seen.add(id(o))
-#        s = sys.getsizeof(o, default_size)
-#        if verbose:
-#            print(s, type(o), repr(o))
-#        for typ, handler in all_handlers.items():
-#            if isinstance(o, typ):
-#                s += sum(map(sizeof, handler(o)))
-#                break
-#        return s
+    def sizeof(obj):
+        if id(obj) in seen:  # не учитывать один и тот же объект дважды
+            return 0
+        seen.add(id(obj))
+        s = sys.getsizeof(obj, default_size)
+        if verbose:
+            print(f"{s} {type(obj)} {repr(obj)}")
+        if hasattr(obj, "__iter__"):
+            if isinstance(obj, dict):
+                s += sum(map(sizeof, iter(obj.keys())))
+                s += sum(map(sizeof, iter(obj.values())))
+            elif not isinstance(obj, str):
+                s += sum(map(sizeof, iter(obj)))
+        return s
 
-#    return sizeof(o)
+    return sizeof(obj)
 
 
 def func_vars(fname, fvars):
