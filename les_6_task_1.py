@@ -103,14 +103,14 @@ def mem_dump(addr, level=0):
         for item in info.items:
             mem_dump(item, level+1)
     elif obj.type == id(type(list())):
-        items = struct.unpack('L'*abs(info.size), ctypes.string_at(info.id_items, 8*abs(var_obj.size)))
+        items = struct.unpack('Q'*abs(info.size), ctypes.string_at(info.id_items, 8*abs(info.size)))
         for item in items:
             mem_dump(item, level+1)
     elif obj.type == id(type(set())):
-        items = struct.unpack('L'*abs(info.used)*2, ctypes.string_at(info.id_table, 8*abs(var_obj.size)*2))
+        items = struct.unpack('Q'*abs(info.used)*2, ctypes.string_at(info.id_table, 8*abs(info.used)*2))
         print(items)
     elif obj.type == id(type(dict())):
-        items = struct.unpack('L'*7 + 'L'*abs(info.used)*3, ctypes.string_at(info.id_keys, 8*7+8*abs(var_obj.size)*3))
+        items = struct.unpack('Q'*7 + 'Q'*abs(info.used)*3, ctypes.string_at(info.id_keys, 8*7+8*abs(info.used)*3))
         print(items)
     return info
 
@@ -205,7 +205,7 @@ def reverse_3(number):
     return result
 
 
-def test_task(n):
+def test_reverse(n):
     """Проверка: сравнение значений функций reverse() между собой"""
     a = reverse_1(n)
     b = reverse_2(n)
@@ -245,7 +245,7 @@ def test_mem_dump():
 if __name__ == "__main__":
     print(f"System: {sys.platform};\tPython: {sys.version}")
     # test_mem_dump()
-    test_task(92233720368547758070)
+    test_reverse(92233720368547758070)
 
 
 # TODO: ВЫВОД
