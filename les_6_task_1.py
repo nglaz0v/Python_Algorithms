@@ -159,8 +159,10 @@ def func_vars(fname, fvars):
     for name, X in fvars:
         print(f"name={name} id={id(X)}: value={repr(X)}\tclass={type(X)}\tsizeof={sys.getsizeof(X)}\t")
         mem_dump(id(X))
-    print(f"Memory used: {sum(map(sys.getsizeof, (X for _, X in fvars)))} bytes")
+    memory_used = sum(map(sys.getsizeof, (X for _, X in fvars)))
+    print(f"*** Memory used: {memory_used} bytes ***")
     print("="*20)
+    return memory_used
 
 
 def reverse_1(number):
@@ -177,17 +179,21 @@ def reverse_1(number):
 
 def reverse_2(number):
     """Инвертировать порядок цифр натурального числа (рекурсивная версия)"""
-    def invert(number):
+    def invert(number, mem_used=0):
         if (len(number) == 1):
-            return number
+            return number, 0
         else:
             head = number[1:]
             tail = number[:1]
-            inv_head = invert(head)
+            inv_head, mem_used = invert(head)
             result = inv_head + tail
-            func_vars(reverse_2.__name__, locals().items())
-            return result
-    return int(invert(str(number)))
+            mem_used += func_vars(invert.__name__, locals().items())
+            return result, mem_used
+    print(f"--- {reverse_2.__name__} ---")
+    result, mem_used = invert(str(number))
+    result = int(result)
+    print(f"*** Memory used: {mem_used} bytes ***")
+    return result
 
 
 def reverse_3(number):
