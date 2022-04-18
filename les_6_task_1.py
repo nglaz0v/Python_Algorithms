@@ -21,7 +21,6 @@ import sys
 import ctypes
 import struct
 from collections import namedtuple
-# from itertools import chain
 
 Object = namedtuple("Object", ("refcnt", "type"))
 VarObject = namedtuple("VarObject", Object._fields + ("size",))
@@ -37,6 +36,7 @@ Dict = namedtuple("Dict", Object._fields + ("used", "version_tag", "id_keys", "i
 
 
 def mem_dump(addr, level=0):
+    """Информация о данных в памяти по заданному адресу"""
     fmt_py_obj = 'nP'  # ob_refcnt + ob_type
     sz_py_obj = 8 + 8
     fmt_py_obj_var = fmt_py_obj + 'n'  # ... + ob_size
@@ -71,13 +71,13 @@ def mem_dump(addr, level=0):
         info = Complex(*dump)
     elif obj.type == id(type(str())):
         len_x = abs(var_obj.size)
-        fmt = fmt_py_obj_var + 'nQQ' + 'c'*(len_x+1)  # ... + ob_shash + QW + QW + ...
+        fmt = fmt_py_obj_var + 'nQQ' + 'c'*(len_x+1)  # ... + hash + state1 + state2 + wstr
         size = sz_py_obj_var + 8*3 + abs(len_x+1)
         dump = struct.unpack(fmt, ctypes.string_at(addr, size))
         k = len(Unicode._fields) - 1
         info = Unicode(*(*(dump[:k]), dump[k:]))
     elif obj.type == id(type(tuple())):
-        fmt = fmt_py_obj_var + 'P'*abs(var_obj.size)  # ... + ob_item + ...
+        fmt = fmt_py_obj_var + 'P'*abs(var_obj.size)  # ... + ob_item
         size = sz_py_obj_var + 8*abs(var_obj.size)
         dump = struct.unpack(fmt, ctypes.string_at(addr, size))
         k = len(Tuple._fields) - 1
@@ -193,40 +193,16 @@ def test_task(n):
     assert a == b == c
 
 
-if __name__ == "__main__":
-    test_task(92233720368547758070)
-    print(f"System: {sys.platform};\tPython: {sys.version}")
-
+def test_mem_dump():
+    """Проверка: тестирование функций работы с памятью"""
     # d = dict(a=1, b=2, c=3, d=[4,5,6,7], e='a string of chars')
     # print(total_size(d, verbose=True))
 
-    # неизменяемые типы
-    bX = True  # bool
-    iX = 5  # int
-    fX = 125.54  # float
-    cX = 1-1j  # complex
-    sX = "Hello, world!"  # str
+    sX = "0123456789"  # str
     tX = (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)  # tuple
-    # fsX = frozenset(tX)  # frozenset
-    # изменяемые типы
     lX = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]  # list
     nX = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}  # set
-    dX = {_: _ for _ in lX}  # dict
-
-#    fmt_py_obj = 'nP'  # ob_refcnt + ob_type
-#    fmt_py_obj_var = fmt_py_obj + 'n'  # ... + ob_size
-#    fmt = {
-#        id(type(iX)): fmt_py_obj_var + 'i',  # ... + ob_digit
-#        id(type(fX)): fmt_py_obj + 'd',  # ... + ob_fval
-#        id(type(cX)): fmt_py_obj + 'dd',  # ... + real + imag
-#        id(type(sX)): fmt_py_obj_var + 'nQQ' + 'c'*(len(sX)+1),  # ... + ob_shash + QW + QW + ...
-#        id(type(tX)): fmt_py_obj_var + 'P'*len(tX),  # ... + ob_item + ...
-#        id(type(lX)): fmt_py_obj_var + 'Pn' + 'P'*len(lX),  # ... + ob_item + allocated
-#        id(type(nX)): fmt_py_obj + 'nnnPnn' + 'Pn'*8 + 'P' + 'P'*64,  # ... + fill + used + mask + table + hash + finger + smalltable + weakreflist
-#        id(type(dX)): fmt_py_obj + 'n' + 'PPP'*len(dX) + 'P'*len(dX),  # ... + ma_used + ma_version_tag + ma_keys + ma_values
-#        id(type(bX)): fmt_py_obj_var + 'i'  # ... + ob_digit
-#        }
-#    # print(fmt)
+    dX = {_: _ for _ in tX}  # dict
 
     for X in (False, True, -100, 0, 10, 10**3, 10**20, 1/2, -1j, 1-0j):
         # var_info(X)
@@ -239,6 +215,12 @@ if __name__ == "__main__":
         print(f"id={id(X)}: value={repr(X)}\tclass={type(X)}\tsizeof={sys.getsizeof(X)}\t")
         mem_dump(id(X))
         # total_size(X, verbose=True)
+
+
+if __name__ == "__main__":
+    print(f"System: {sys.platform};\tPython: {sys.version}")
+    test_mem_dump()
+    test_task(92233720368547758070)
 
 
 # TODO: ВЫВОД
