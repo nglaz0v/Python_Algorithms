@@ -176,6 +176,16 @@ def reverse_1(number):
     func_vars(reverse_1.__name__, locals().items())
     return result
 
+# --- reverse_1 ---
+# name=number id=140725472927456: value=0	class=<class 'int'>	sizeof=24
+# [140725472927456]: Long(refcnt=314, type=140725472757536, size=0, digit=())
+# name=result id=1778432644080: value=7085774586302733229	class=<class 'int'>	sizeof=36
+# [1778432644080]: Long(refcnt=4, type=140725472757536, size=3, digit=(923835309, 156690886, 6))
+# name=digit id=140725472927744: value=9	class=<class 'int'>	sizeof=28
+# [140725472927744]: Long(refcnt=20, type=140725472757536, size=1, digit=(9,))
+# *** Memory used: 88 bytes ***
+# ====================
+
 
 def reverse_2(number):
     """Инвертировать порядок цифр натурального числа (рекурсивная версия)"""
@@ -195,6 +205,61 @@ def reverse_2(number):
     print(f"*** Memory used: {mem_used} bytes ***")
     return result
 
+# --- reverse_2 ---
+# --- invert ---
+# name=number id=1778432641968: value='70'	class=<class 'str'>	sizeof=51
+# [1778432641968]: Unicode(refcnt=6, type=140725472778016, length=2, hash=-1, state1=1778432642276, state2=0, wstr=(b'7', b'0', b'\x00'))
+# name=mem_used id=140725472927456: value=0	class=<class 'int'>	sizeof=24
+# [140725472927456]: Long(refcnt=333, type=140725472757536, size=0, digit=())
+# name=head id=1778432572208: value='0'	class=<class 'str'>	sizeof=50
+# [1778432572208]: Unicode(refcnt=10, type=140725472778016, length=1, hash=8321573922247248229, state1=228, state2=0, wstr=(b'0', b'\x00'))
+# name=tail id=1778432641136: value='7'	class=<class 'str'>	sizeof=50
+# [1778432641136]: Unicode(refcnt=8, type=140725472778016, length=1, hash=-1, state1=228, state2=0, wstr=(b'7', b'\x00'))
+# name=inv_head id=1778432572208: value='0'	class=<class 'str'>	sizeof=50
+# [1778432572208]: Unicode(refcnt=10, type=140725472778016, length=1, hash=8321573922247248229, state1=228, state2=0, wstr=(b'0', b'\x00'))
+# name=result id=1778432642032: value='07'	class=<class 'str'>	sizeof=51
+# [1778432642032]: Unicode(refcnt=4, type=140725472778016, length=2, hash=-1, state1=515396075748, state2=0, wstr=(b'0', b'7', b'\x00'))
+# name=invert id=1778432648528: value=<function reverse_2.<locals>.invert at 0x0000019E12D8A550>	class=<class 'function'>	sizeof=136
+# [1778432648528]: None
+# *** Memory used: 412 bytes ***
+# ====================
+# --- invert ---
+# name=number id=1778432641904: value='070'	class=<class 'str'>	sizeof=52
+# [1778432641904]: Unicode(refcnt=6, type=140725472778016, length=3, hash=-1, state1=1778432642020, state2=0, wstr=(b'0', b'7', b'0', b'\x00'))
+# name=mem_used id=1778432486224: value=412	class=<class 'int'>	sizeof=28
+# [1778432486224]: Long(refcnt=5, type=140725472757536, size=1, digit=(412,))
+# name=head id=1778432641968: value='70'	class=<class 'str'>	sizeof=51
+# [1778432641968]: Unicode(refcnt=4, type=140725472778016, length=2, hash=-1, state1=1778432642276, state2=0, wstr=(b'7', b'0', b'\x00'))
+# name=tail id=1778432572208: value='0'	class=<class 'str'>	sizeof=50
+# [1778432572208]: Unicode(refcnt=7, type=140725472778016, length=1, hash=8321573922247248229, state1=228, state2=0, wstr=(b'0', b'\x00'))
+# name=inv_head id=1778432642032: value='07'	class=<class 'str'>	sizeof=51
+# [1778432642032]: Unicode(refcnt=4, type=140725472778016, length=2, hash=-1, state1=515396075748, state2=0, wstr=(b'0', b'7', b'\x00'))
+# name=result id=1778432676464: value='070'	class=<class 'str'>	sizeof=52
+# [1778432676464]: Unicode(refcnt=4, type=140725472778016, length=3, hash=-1, state1=228, state2=0, wstr=(b'0', b'7', b'0', b'\x00'))
+# name=invert id=1778432648528: value=<function reverse_2.<locals>.invert at 0x0000019E12D8A550>	class=<class 'function'>	sizeof=136
+# [1778432648528]: None
+# *** Memory used: 420 bytes ***
+# ====================
+# ...
+# --- invert ---
+# name=number id=1778432554448: value='92233720368547758070'	class=<class 'str'>	sizeof=69
+# [1778432554448]: Unicode(refcnt=5, type=140725472778016, length=20, hash=-1, state1=228, state2=0, wstr=(b'9', b'2', b'2', b'3', b'3', b'7', b'2', b'0', b'3', b'6', b'8', b'5', b'4', b'7', b'7', b'5', b'8', b'0', b'7', b'0', b'\x00'))
+# name=mem_used id=1778432486128: value=8096	class=<class 'int'>	sizeof=28
+# [1778432486128]: Long(refcnt=5, type=140725472757536, size=1, digit=(8096,))
+# name=head id=1778432577248: value='2233720368547758070'	class=<class 'str'>	sizeof=68
+# [1778432577248]: Unicode(refcnt=4, type=140725472778016, length=19, hash=-1, state1=228, state2=0, wstr=(b'2', b'2', b'3', b'3', b'7', b'2', b'0', b'3', b'6', b'8', b'5', b'4', b'7', b'7', b'5', b'8', b'0', b'7', b'0', b'\x00'))
+# name=tail id=1778432641008: value='9'	class=<class 'str'>	sizeof=50
+# [1778432641008]: Unicode(refcnt=5, type=140725472778016, length=1, hash=-1, state1=1778432640996, state2=0, wstr=(b'9', b'\x00'))
+# name=inv_head id=1778432577408: value='0708577458630273322'	class=<class 'str'>	sizeof=68
+# [1778432577408]: Unicode(refcnt=4, type=140725472778016, length=19, hash=-1, state1=1778432478180, state2=0, wstr=(b'0', b'7', b'0', b'8', b'5', b'7', b'7', b'4', b'5', b'8', b'6', b'3', b'0', b'2', b'7', b'3', b'3', b'2', b'2', b'\x00'))
+# name=result id=1778432577328: value='07085774586302733229'	class=<class 'str'>	sizeof=69
+# [1778432577328]: Unicode(refcnt=4, type=140725472778016, length=20, hash=-1, state1=228, state2=0, wstr=(b'0', b'7', b'0', b'8', b'5', b'7', b'7', b'4', b'5', b'8', b'6', b'3', b'0', b'2', b'7', b'3', b'3', b'2', b'2', b'9', b'\x00'))
+# name=invert id=1778432648528: value=<function reverse_2.<locals>.invert at 0x0000019E12D8A550>	class=<class 'function'>	sizeof=136
+# [1778432648528]: None
+# *** Memory used: 488 bytes ***
+# ====================
+# *** Memory used: 8584 bytes ***
+
 
 def reverse_3(number):
     """Инвертировать порядок цифр натурального числа (версия со срезами)"""
@@ -203,6 +268,18 @@ def reverse_3(number):
     result = int(rev_str_num)
     func_vars(reverse_3.__name__, locals().items())
     return result
+
+# --- reverse_3 ---
+# name=number id=1778432729024: value=92233720368547758070	class=<class 'int'>	sizeof=36
+# [1778432729024]: Long(refcnt=9, type=140725472757536, size=3, digit=(1073741814, 1073741823, 79))
+# name=str_num id=1778432554448: value='92233720368547758070'	class=<class 'str'>	sizeof=69
+# [1778432554448]: Unicode(refcnt=4, type=140725472778016, length=20, hash=-1, state1=228, state2=0, wstr=(b'9', b'2', b'2', b'3', b'3', b'7', b'2', b'0', b'3', b'6', b'8', b'5', b'4', b'7', b'7', b'5', b'8', b'0', b'7', b'0', b'\x00'))
+# name=rev_str_num id=1778432577328: value='07085774586302733229'	class=<class 'str'>	sizeof=69
+# [1778432577328]: Unicode(refcnt=4, type=140725472778016, length=20, hash=-1, state1=228, state2=0, wstr=(b'0', b'7', b'0', b'8', b'5', b'7', b'7', b'4', b'5', b'8', b'6', b'3', b'0', b'2', b'7', b'3', b'3', b'2', b'2', b'9', b'\x00'))
+# name=result id=1778432685664: value=7085774586302733229	class=<class 'int'>	sizeof=36
+# [1778432685664]: Long(refcnt=4, type=140725472757536, size=3, digit=(923835309, 156690886, 6))
+# *** Memory used: 210 bytes ***
+# ====================
 
 
 def test_reverse(n):
@@ -248,4 +325,21 @@ if __name__ == "__main__":
     test_reverse(92233720368547758070)
 
 
-# TODO: ВЫВОД
+# System: win32;	Python: 3.8.12 (default, Oct 12 2021, 03:01:40) [MSC v.1916 64 bit (AMD64)]
+
+# ВЫВОД:
+# Для тестирования использовалось целое число, которое заведомо больше чем 2**64.
+# Среди трёх функций инвертирования порядка цифр натурального числа лучшие
+# результаты продемонстрировала reverse_1().
+#
+# reverse_1() для вычисления результата использует целочисленную арифметику и
+# задействует всего три переменные типа Long (number, digit, result).
+# Общее количество памяти, занятой данной функцией: ~ 88 байт
+#
+# reverse_2() для работы использует рекурсивную функцию invert() и за каждый её
+# вызов расходуется в среднем 450 байт на строковые переменные.
+# Общее количество памяти, занятой данной функцией: ~ 8584 байт
+#
+# reverse_3() использует механизм срезов Python3 и задействует две переменные
+# типа Long (number, result) и две переменные типа Unicode (str_num, rev_str_num).
+# Общее количество памяти, занятой данной функцией: ~ 210 байт
