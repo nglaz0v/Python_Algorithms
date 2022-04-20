@@ -5,5 +5,11 @@
 отсортированный массивы.
 """
 
+import random
+
 print(__doc__)
+size = 10
+array = [i for i in range(size)]
+random.shuffle(array)
+print(array)
 # ...
