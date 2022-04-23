@@ -13,9 +13,29 @@ b. постарайтесь сделать алгоритм умнее, но п�
 
 import random
 
+
+def bubble_sort(a, desc=True):
+    """
+    Сортировка методом пузырька
+
+    :param a: исходный массив
+    :param desc: False - по возрастанию; True - по убыванию
+    :return: отсортированный массив
+    """
+    lt = lambda a, b: a < b
+    gt = lambda a, b: a > b
+    cmp = lt if desc else gt
+    for n in range(1, len(a)):
+        for i in range(len(a) - n):
+            if cmp(a[i], a[i+1]):
+                a[i], a[i+1] = a[i+1], a[i]
+        # print(a)
+    return a
+
+
 print(__doc__)
-size = 10
-array = [i for i in range(size)]
-random.shuffle(array)
+size = 20
+array = [random.randint(-100, 100) for i in range(size)]
 print(array)
-# ...
+bubble_sort(array)
+print(array)
