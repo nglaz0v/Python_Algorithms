@@ -25,16 +25,21 @@ def bubble_sort(a, desc=True):
     lt = lambda a, b: a < b
     gt = lambda a, b: a > b
     cmp = lt if desc else gt
-    for n in range(1, len(a)):
-        for i in range(len(a) - n):
+    N = len(a)
+    for j in range(1, N):
+        flag = False  # был ли хотя бы один обмен значениями
+        for i in range(N - j):
             if cmp(a[i], a[i+1]):
                 a[i], a[i+1] = a[i+1], a[i]
+                flag = True
+        if not flag:
+            break  # обменов не было -> массив уже отсортирован
         # print(a)
     return a
 
 
 print(__doc__)
-size = 20
+size = int(input("N: "))
 array = [random.randint(-100, 100) for i in range(size)]
 print(array)
 bubble_sort(array)
