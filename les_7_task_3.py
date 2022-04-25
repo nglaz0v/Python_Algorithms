@@ -12,27 +12,31 @@
 import random
 
 print(__doc__)
-m = 7
+m = int(input("m: "))
 size = 2*m+1
 array = [i for i in range(size)]
 random.shuffle(array)
 print(array)
 
-below = {min(array[0], array[1], array[2])}
-above = {max(array[0], array[1], array[2])}
-for i in range(0, len(array)):
+below = {array[0]}  # "нижние" элементы (которые меньше медианы)
+above = {array[0]}  # "верхние" элементы (которые больше медианы)
+for i in range(1, len(array)):
     # print(f"{array[i]=}: {below=} {above=}")
-    if (array[i] < max(below)):
-        below.add(array[i])
-    elif (array[i] > min(above)):
-        above.add(array[i])
+    if (array[i] < max(below)):  # очередной элемент меньше максимума из "нижних"
+        below.add(array[i])  # добавить его к "нижним"
+    elif (array[i] > min(above)):  # очередной элемент больше минимума из "верхних"
+        above.add(array[i])  # добавить его к "верхним"
     else:
+        # добавить к обоим множествам
         below.add(array[i])
         above.add(array[i])
+    # количество "нижних" и "верхних" элементов не должно различаться более чем на 1
     if (len(below) > (len(above)+1)):
+        # максимум из "нижних" отправить к "верхним"
         above.add(max(below))
         below.remove(max(below))
     elif (len(above) > (len(below)+1)):
+        # минимум из "верхних" отправить к "нижним"
         below.add(min(above))
         above.remove(min(above))
 # print(sorted(below))
@@ -40,10 +44,10 @@ for i in range(0, len(array)):
 
 median = None
 if len(below) < len(above):
-    median = min(above)
+    median = min(above)  # минимум из "верхних"
 elif len(below) > len(above):
-    median = max(below)
+    median = max(below)  # максимум из "нижних"
 else:
-    median = (below & above).pop()
+    median = (below & above).pop()  # пересечение "нижних" и "верхних" множеств
 assert median == sorted(array)[m]
 print(f"{median = }")
