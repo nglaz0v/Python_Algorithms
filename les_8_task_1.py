@@ -6,4 +6,13 @@
 """
 
 print(__doc__)
-# ...
+N = int(input("Число друзей: "))
+graph = [[0 for j in range(N)] for i in range(N)]
+for i in range(N):
+    # А пожал руку Б = Б пожал руку А - это одно и то же рукопожатие,
+    # поэтому "ответное" рукопожатие не учитываем
+    for j in range(i):
+        if i != j:  # не учитывать рукопожатия с самим собой
+            graph[i][j] = 1
+print(*graph, sep='\n')
+print(sum(map(sum, graph)))
