@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Написать программу, которая обходит не взвешенный ориентированный граф без
+Написать программу, которая обходит невзвешенный ориентированный граф без
 петель, в котором все вершины связаны, по алгоритму поиска в глубину
 (Depth-First Search).
 Примечания:
@@ -9,28 +9,68 @@ b. генерация графа выполняется в отдельной ф
 число вершин.
 """
 
-from collections import namedtuple
+
+def generate_graph(n):
+    """
+    Сгенерировать невзвешенный ориентированный граф без петель, в котором все
+    вершины связаны
+
+    :param n: число вершин графа
+    :return: граф в виде списка смежности
+    """
+    fullset = {i for i in range(n)}
+    graph = {i: fullset - {i} for i in range(n)}
+    return graph
+
+
+def dfs(graph, start, visited=None):
+    """Обход графа по алгоритму поиска в глубину (Depth-First Search)"""
+    if visited is None:
+        visited = []  # set()
+    if start not in set(visited):
+        visited.append(start)  # visited.add(start)
+    # print(start)
+    for cur in graph[start] - set(visited):
+        dfs(graph, cur, visited)
+    return visited
+
 
 print(__doc__)
-# списки смежности
-graph_2a = {
-        0: {1, 2},
-        1: {0, 2, 3},
-        2: {0, 1},
-        3: {1},
+g = {
+     0: {1, 3, 4},
+     1: {2, 5},
+     2: {1, 6},
+     3: {1, 5, 7},
+     4: {2, 6},
+     5: {6},
+     6: {5},
+     7: {6}
 }
-print(graph_2a)
-print(3 in graph_2a[1])
-print('*'*20)
-Vertex = namedtuple("Vertex", ["vertex", "edge"])
-graph_2b = []
-graph_2b.append([Vertex(1, 2), Vertex(2, 3)])
-graph_2b.append([Vertex(0, 2), Vertex(2, 2), Vertex(3, 1)])
-graph_2b.append([Vertex(0, 3), Vertex(1, 2)])
-graph_2b.append([Vertex(1, 1)])
-print(*graph_2b, sep='\n')
-for v in graph_2b[1]:
-    if v.vertex == 3:
-        print(True)
-# print(any([v.vertex == 3 for v in graph_2b[1]]))
-print('*'*20)
+g = generate_graph(8)
+print(g)
+
+graph = {'0': set(['1', '2']),
+         '1': set(['0', '3', '4']),
+         '2': set(['0']),
+         '3': set(['1']),
+         '4': set(['2', '3'])}
+print(dfs(graph, '0'))
+print(dfs(g, 0))
+
+
+import random
+def graph_gen(vertex):
+    vert = []
+    graph = dict()
+    for i in range(vertex):
+        vert.append(i)
+
+    for i in vert:
+        vert_ch = random.choices(vert, k = random.randint(1, vertex))
+        vert_ch = set(vert_ch)
+        vert_ch.discard(i)
+        graph.update([(str(i), vert_ch)])
+
+    return graph
+
+print(graph_gen(10))
