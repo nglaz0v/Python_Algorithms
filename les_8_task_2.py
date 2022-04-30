@@ -9,25 +9,26 @@ def dijkstra(graph, start):
     """Алгоритм Дейкстры (поиск кратчайшего пути от одной из вершин графа до всех остальных)"""
     length = len(graph)
     is_visited = [False] * length
-    cost = {i: {"path": [], "weight": float('inf')} for i in range(length)}
+    cost = [float('inf')] * length
+    path = [[]] * length
     parent = [-1] * length
-    cost[start]["weight"] = 0
-    cost[start]["path"] = [start]
+    cost[start] = 0
+    path[start] = [start]
     min_cost = 0
     while min_cost < float('inf'):
         is_visited[start] = True
         for i, vertex in enumerate(graph[start]):
             if vertex != 0 and not is_visited[i]:
-                if cost[i]["weight"] > vertex + cost[start]["weight"]:
-                    cost[i]["weight"] = vertex + cost[start]["weight"]
-                    cost[i]["path"] = cost[start]["path"] + [i]
+                if cost[i] > vertex + cost[start]:
+                    cost[i] = vertex + cost[start]
+                    path[i] = path[start] + [i]
                     parent[i] = start
         min_cost = float('inf')
         for i in range(length):
-            if min_cost > cost[i]["weight"] and not is_visited[i]:
-                min_cost = cost[i]["weight"]
+            if min_cost > cost[i] and not is_visited[i]:
+                min_cost = cost[i]
                 start = i
-    return cost
+    return path, cost
 
 
 print(__doc__)
@@ -43,6 +44,6 @@ g = [
      [0, 0, 0, 0, 0, 1, 2, 0],  # 7
 ]
 s = int(input("От какой вершины идти: "))
-routes = dijkstra(g, s)
-for key, val in routes.items():
-    print(f"{key}: {val['path']}\t({val['weight']})")
+routes, weights = dijkstra(g, s)
+for i, (r, w) in enumerate(zip(routes, weights)):
+    print(f"{i}: path={r} (cost={w})")
