@@ -9,6 +9,8 @@ b. генерация графа выполняется в отдельной ф
 число вершин.
 """
 
+import random
+
 
 def generate_graph(n):
     """
@@ -18,8 +20,11 @@ def generate_graph(n):
     :param n: число вершин графа
     :return: граф в виде списка смежности
     """
-    fullset = {i for i in range(n)}
-    graph = {i: fullset - {i} for i in range(n)}
+    graph = {}
+    vertices = [i for i in range(n)]
+    for i in vertices:
+        chosen = random.choices(vertices, k=random.randint(1, n))
+        graph[i] = set(chosen) - {i}
     return graph
 
 
@@ -36,41 +41,6 @@ def dfs(graph, start, visited=None):
 
 
 print(__doc__)
-g = {
-     0: {1, 3, 4},
-     1: {2, 5},
-     2: {1, 6},
-     3: {1, 5, 7},
-     4: {2, 6},
-     5: {6},
-     6: {5},
-     7: {6}
-}
 g = generate_graph(8)
 print(g)
-
-graph = {'0': set(['1', '2']),
-         '1': set(['0', '3', '4']),
-         '2': set(['0']),
-         '3': set(['1']),
-         '4': set(['2', '3'])}
-print(dfs(graph, '0'))
 print(dfs(g, 0))
-
-
-import random
-def graph_gen(vertex):
-    vert = []
-    graph = dict()
-    for i in range(vertex):
-        vert.append(i)
-
-    for i in vert:
-        vert_ch = random.choices(vert, k = random.randint(1, vertex))
-        vert_ch = set(vert_ch)
-        vert_ch.discard(i)
-        graph.update([(str(i), vert_ch)])
-
-    return graph
-
-print(graph_gen(10))
