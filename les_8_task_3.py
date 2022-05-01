@@ -12,7 +12,7 @@ b. генерация графа выполняется в отдельной ф
 import random
 
 
-def generate_graph(n):
+def generate_graph(n: int) -> dict:
     """
     Сгенерировать невзвешенный ориентированный граф без петель, в котором все
     вершины связаны
@@ -28,19 +28,27 @@ def generate_graph(n):
     return graph
 
 
-def dfs(graph, start, visited=None):
-    """Обход графа по алгоритму поиска в глубину (Depth-First Search)"""
-    if visited is None:
-        visited = []  # set()
+def dfs(graph: dict, start: int, visited=[]) -> list:
+    """
+    Обход графа по алгоритму поиска в глубину (Depth-First Search)
+
+    :param graph: граф в виде списка смежности
+    :param start: начальная вершина
+    :param visited: список посещённых вершин
+    :return: маршрут обхода графа
+    """
     if start not in set(visited):
-        visited.append(start)  # visited.add(start)
+        visited.append(start)
     # print(start)
-    for cur in graph[start] - set(visited):
-        dfs(graph, cur, visited)
+    for current in graph[start] - set(visited):
+        dfs(graph, current, visited)
     return visited
 
 
 print(__doc__)
-g = generate_graph(8)
-print(g)
-print(dfs(g, 0))
+n = 8
+graph = generate_graph(n)
+print(f"{graph = }")
+start = 0
+route = dfs(graph, start)
+print(f"{route = }")
