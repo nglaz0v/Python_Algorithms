@@ -19,7 +19,7 @@ class TreeNode:
             return s
         k += 1
         s += TreeNode.content(node.left, k)
-        s += ' '*k*4 + str(node.data) + '\n'
+        s += f"{' '*k*4}'{node.data}'\n"
         s += TreeNode.content(node.right, k)
         k -= 1
         return s
@@ -29,6 +29,16 @@ class TreeNode:
 
     def __repr__(self):
         return f"'{self.data}'"
+
+    @staticmethod
+    def code(node, tbl={}, path=''):
+        if node is None:
+            return
+        TreeNode.code(node.left, tbl, path+'0')
+        if node.left is None and node.right is None:
+            tbl[node.data] = path
+        TreeNode.code(node.right, tbl, path+'1')
+        return tbl
 
 
 print(__doc__)
@@ -49,7 +59,13 @@ while len(elems) > 1:
     freqs.pop(e_r.data)
     elems = sorted(freqs, key=freqs.get)
     leafs.insert(elems.index(e_l.data+e_r.data), node)
-    print(elems, freqs, leafs)
+    # print(elems, end=' ')
+    # print(freqs, end=' ')
+    print(leafs)
 
 print(node)
 # print(leafs[0])
+table = TreeNode.code(node)
+print(table)
+print([bin(ord(c)) for c in s])
+print([table[c] for c in s])
