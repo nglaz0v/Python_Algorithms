@@ -36,7 +36,7 @@ class TreeNode:
             return
         TreeNode.code(node.left, tbl, path+'0')
         if node.left is None and node.right is None:
-            tbl[node.data] = path
+            tbl[node.data] = path  # int(path, base=2)
         TreeNode.code(node.right, tbl, path+'1')
         return tbl
 
@@ -65,7 +65,7 @@ while len(elems) > 1:
 
 print(node)
 # print(leafs[0])
-table = TreeNode.code(node)
-print(table)
-print([bin(ord(c)) for c in s])
-print([table[c] for c in s])
+tbl = TreeNode.code(node)
+print(tbl)
+for c in s:
+    print(f"{c}: {bin(ord(c))[2:]:0>8}\t{tbl[c]}")
