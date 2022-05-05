@@ -41,31 +41,35 @@ class TreeNode:
         return tbl
 
 
-print(__doc__)
-s = "beep boop beer!"
-freqs = dict(Counter(s))
-elems = sorted(freqs, key=freqs.get)
-leafs = [TreeNode(item) for item in elems]
-print(leafs)
-
-while len(elems) > 1:
-    e_l = leafs.pop(0)
-    e_r = leafs.pop(0)
-    node = TreeNode(e_l.data + e_r.data)
-    node.left = e_l
-    node.right = e_r
-    freqs[e_l.data + e_r.data] = freqs[e_l.data] + freqs[e_r.data]
-    freqs.pop(e_l.data)
-    freqs.pop(e_r.data)
+def huffman(s: str) -> dict:
+    freqs = dict(Counter(s))
     elems = sorted(freqs, key=freqs.get)
-    leafs.insert(elems.index(e_l.data+e_r.data), node)
-    # print(elems, end=' ')
-    # print(freqs, end=' ')
+    leafs = [TreeNode(item) for item in elems]
     print(leafs)
 
-print(node)
-# print(leafs[0])
-tbl = TreeNode.code(node)
+    while len(elems) > 1:
+        e_l = leafs.pop(0)
+        e_r = leafs.pop(0)
+        node = TreeNode(e_l.data + e_r.data)
+        node.left = e_l
+        node.right = e_r
+        freqs[e_l.data + e_r.data] = freqs[e_l.data] + freqs[e_r.data]
+        freqs.pop(e_l.data)
+        freqs.pop(e_r.data)
+        elems = sorted(freqs, key=freqs.get)
+        leafs.insert(elems.index(e_l.data+e_r.data), node)
+        # print(elems, end=' ')
+        # print(freqs, end=' ')
+        print(leafs)
+
+    print(node)
+    # print(leafs[0])
+    return TreeNode.code(node)
+
+
+print(__doc__)
+s = input("Введите кодируемую строку: ")  # "beep boop beer!"
+tbl = huffman(s)
 print(tbl)
 for c in s:
     print(f"{c}: {bin(ord(c))[2:]:0>8}\t{tbl[c]}")
