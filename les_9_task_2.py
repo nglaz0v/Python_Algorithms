@@ -6,55 +6,56 @@
 from collections import Counter
 
 
-class TreeNode:
-    """Узел дерева"""
+class BinTreeNode:
+    """Узел бинарного дерева"""
     def __init__(self, data, left=None, right=None):
         self.data = data
         self.left = left
         self.right = right
 
-    @staticmethod
-    def content(node, k=0):
+    def __content(self, k=0):
         """Содержимое узла и его дочерних узлов"""
         s = ''
-        if node is None:
+        if self is None:
             return s
         k += 1
-        s += TreeNode.content(node.left, k)
-        s += f"{' '*k*4}'{node.data}'\n"
-        s += TreeNode.content(node.right, k)
+        if self.left is not None:
+            s += self.left.__content(k)
+        s += f"{' '*k*4}'{self.data}'\n"
+        if self.right is not None:
+            s += self.right.__content(k)
         k -= 1
         return s
 
     def __str__(self):
-        return TreeNode.content(self)
+        return self.__content()
 
     def __repr__(self):
         return f"'{self.data}'"
 
-    @staticmethod
-    def code(node, tbl={}, path=''):
-        """Создать таблицу кодирования"""
-        if node is None:
-            return
-        TreeNode.code(node.left, tbl, path+'0')
-        if node.left is None and node.right is None:
-            tbl[node.data] = path  # int(path, base=2)
-        TreeNode.code(node.right, tbl, path+'1')
-        return tbl
+
+def code_table(node: BinTreeNode, tbl={}, path='') -> dict:
+    """Создать таблицу кодирования"""
+    if node is None:
+        return
+    code_table(node.left, tbl, path+'0')
+    if node.left is None and node.right is None:
+        tbl[node.data] = path  # int(path, base=2)
+    code_table(node.right, tbl, path+'1')
+    return tbl
 
 
 def huffman(s: str) -> dict:
     """Кодирование по алгоритму Хаффмана"""
     freqs = dict(Counter(s))
     elems = sorted(freqs, key=freqs.get)
-    leafs = [TreeNode(item) for item in elems]
+    leafs = [BinTreeNode(item) for item in elems]
     print(leafs)
 
     while len(elems) > 1:
         e_l = leafs.pop(0)
         e_r = leafs.pop(0)
-        node = TreeNode(e_l.data + e_r.data)
+        node = BinTreeNode(e_l.data + e_r.data)
         node.left = e_l
         node.right = e_r
         freqs[e_l.data + e_r.data] = freqs[e_l.data] + freqs[e_r.data]
@@ -68,7 +69,7 @@ def huffman(s: str) -> dict:
 
     print(node)
     # print(leafs[0])
-    return TreeNode.code(node)
+    return code_table(node)
 
 
 print(__doc__)
