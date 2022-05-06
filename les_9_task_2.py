@@ -7,6 +7,7 @@ from collections import Counter
 
 
 class TreeNode:
+    """Узел дерева"""
     def __init__(self, data, left=None, right=None):
         self.data = data
         self.left = left
@@ -14,6 +15,7 @@ class TreeNode:
 
     @staticmethod
     def content(node, k=0):
+        """Содержимое узла и его дочерних узлов"""
         s = ''
         if node is None:
             return s
@@ -32,6 +34,7 @@ class TreeNode:
 
     @staticmethod
     def code(node, tbl={}, path=''):
+        """Создать таблицу кодирования"""
         if node is None:
             return
         TreeNode.code(node.left, tbl, path+'0')
@@ -42,6 +45,7 @@ class TreeNode:
 
 
 def huffman(s: str) -> dict:
+    """Кодирование по алгоритму Хаффмана"""
     freqs = dict(Counter(s))
     elems = sorted(freqs, key=freqs.get)
     leafs = [TreeNode(item) for item in elems]
@@ -71,5 +75,17 @@ print(__doc__)
 s = input("Введите кодируемую строку: ")  # "beep boop beer!"
 tbl = huffman(s)
 print(tbl)
+print("\nИсходная строка: ")
 for c in s:
-    print(f"{c}: {bin(ord(c))[2:]:0>8}\t{tbl[c]}")
+    print(f"{bin(ord(c))[2:]:0>8}", end=' ')
+print()
+for c in s:
+    print(f"{c:<8}", end=' ')
+print(f"\nДлина строки: {len(s)*8} бит")
+print("\nЗакодированная строка: ")
+for c in s:
+    print(f"{tbl[c]}", end=' ')
+print()
+for c in s:
+    print(f"{c}" + ' '*len(tbl[c]), end='')
+print(f"\nДлина строки: {sum([len(tbl[c]) for c in s])} бит")
