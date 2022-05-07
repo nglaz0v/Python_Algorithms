@@ -16,15 +16,16 @@ def count_substrs(s: str) -> int:
     """
     Определить количество различных подстрок в заданной строке
     """
-    s = s.lower()
+    s = s.lower()  # игнорировать регистр символов
     n = len(s)
     assert n > 0, "Строка не может быть пустой"
     hashes = set()
-    for k in range(1, n):
+    for k in range(1, n):  # цикл по всевозможным длинам подстрок
         for i in range(n - k + 1):
             substr = s[i:i+k]
             print(f"{k} {i}: {substr}")
             hashsub = hashlib.sha1(substr.encode("utf-8")).hexdigest()
+            # просто игнорируем хэш-коллизии, поскольку считаем их крайне маловероятными
             hashes.add(hashsub)
     return len(hashes)
 

@@ -8,6 +8,7 @@ from collections import Counter
 
 class BinTreeNode:
     """Узел бинарного дерева"""
+
     def __init__(self, data, left=None, right=None):
         self.data = data
         self.left = left
@@ -18,13 +19,13 @@ class BinTreeNode:
         s = ''
         if self is None:
             return s
-        k += 1
+        k += 1  # увеличить отступ
         if self.left is not None:
-            s += self.left.__content(k)
-        s += f"{' '*k*4}'{self.data}'\n"
+            s += self.left.__content(k)  # содержимое левого поддерева
+        s += f"{' '*k*4}'{self.data}'\n"  # содержимое самого узла
         if self.right is not None:
-            s += self.right.__content(k)
-        k -= 1
+            s += self.right.__content(k)  # содержимое правого поддерева
+        k -= 1  # уменьшить отступ
         return s
 
     def __str__(self):
@@ -38,44 +39,44 @@ def code_table(node: BinTreeNode, tbl={}, path='') -> dict:
     """Создать таблицу кодирования"""
     if node is None:
         return
-    code_table(node.left, tbl, path+'0')
-    if node.left is None and node.right is None:
-        tbl[node.data] = path  # int(path, base=2)
-    code_table(node.right, tbl, path+'1')
+    code_table(node.left, tbl, path+'0')  # таблица для левого поддерева
+    if node.left is None and node.right is None:  # если узел - лист дерева, то
+        tbl[node.data] = path  # int(path, base=2)  # сохранить путь в таблице
+    code_table(node.right, tbl, path+'1')  # таблица для правого поддерева
     return tbl
 
 
 def huffman(s: str) -> dict:
     """Кодирование по алгоритму Хаффмана"""
-    freqs = dict(Counter(s))
-    elems = sorted(freqs, key=freqs.get)
-    leafs = [BinTreeNode(item) for item in elems]
-    print(leafs)
+    assert len(s) > 1, "В строке должно быть более одного символа"
+    freqs = dict(Counter(s))  # частотный словарь для символов строки
+    elems = sorted(freqs, key=freqs.get)  # символы, отсортированные по частоте
+    nodes = [BinTreeNode(item) for item in elems]  # узлы дерева
+    print(nodes)
 
     while len(elems) > 1:
-        e_l = leafs.pop(0)
-        e_r = leafs.pop(0)
-        node = BinTreeNode(e_l.data + e_r.data)
-        node.left = e_l
-        node.right = e_r
-        freqs[e_l.data + e_r.data] = freqs[e_l.data] + freqs[e_r.data]
+        e_l = nodes.pop(0)
+        e_r = nodes.pop(0)
+        lr_data = e_l.data + e_r.data
+        node = BinTreeNode(lr_data, e_l, e_r)  # создать новый узел дерева
+        freqs[lr_data] = freqs[e_l.data] + freqs[e_r.data]
         freqs.pop(e_l.data)
         freqs.pop(e_r.data)
         elems = sorted(freqs, key=freqs.get)
-        leafs.insert(elems.index(e_l.data+e_r.data), node)
+        nodes.insert(elems.index(lr_data), node)  # вставить узел в дерево
         # print(elems, end=' ')
         # print(freqs, end=' ')
-        print(leafs)
+        print(nodes)
 
-    print(node)
-    # print(leafs[0])
-    return code_table(node)
+    # print(node)
+    print(nodes[0])
+    return code_table(nodes[0])
 
 
 print(__doc__)
 s = input("Введите кодируемую строку: ")  # "beep boop beer!"
 tbl = huffman(s)
-print(tbl)
+print(f"{tbl = }")
 print("\nИсходная строка: ")
 for c in s:
     print(f"{bin(ord(c))[2:]:0>8}", end=' ')
